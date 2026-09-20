@@ -88,13 +88,8 @@ docker compose up -d --build
 - **Cookie 轮换**：网盘 Cookie 会过期，症状是全部转存 401/风控——更新 `.env` 后重建容器
 - **和谐/违规内容**：百度对违规文件「list 可见、转存被拒」（md5 被打乱），本服务会明确报错，无解，请更换资源源
 - **代理隔离**：容器显式清空代理变量、HTTP 客户端 `trust_env=False`；网盘流量永远直连（代理 IP 触发风控 + TUN 模式会劫持）
-- `tools/` 下是历次事故沉淀的运维脚本（OpenList 百度下载 API 探测/加速、中转恢复、测速、端到端自测）
 
-## 开发
-
-```bash
-python -m pytest tests/ -q     # 193 个用例（适配器 mock / API / 编排器 / 计量 / OAuth 等）
-```
+## 目录结构
 
 ```
 app/
@@ -105,9 +100,7 @@ app/
   relay_meter.py   # 中转计量（物理铁律 dl = max(landed+temp, ul)）
   cache_mgr.py     # 本机缓存：下载计数、TTL/容量双闸、子目录支持
   parser.py        # 分享文本解析（链接 + 提取码，多行粘贴）
-tests/             # 193 用例；conftest 强制与本地 .env 隔离
-tools/             # 运维脚本
-docs/              # 方案与复盘文档
+  static/          # 单页前端（index.html 内联全部 JS/CSS）+ 图标
 ```
 
 ## 免责声明

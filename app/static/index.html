@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网盘转存站</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB0PSIxNzg5ODA0MjAzNzI2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjIwNzUxIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTTQxNy43OTIgMjk2Ljk2YzE0MC45MDI0IDAgMjUzLjk1MiAxMjAuMDgxMDY3IDI1My45NTIgMjY4LjhoOC4xOTJjNzcuMDA0OCAwIDEzOS4yNjQgNjguMDk2IDEzOS4yNjQgMTUyLjMzNzA2NyAwIDg0LjIwNjkzMy02Mi4yNTkyIDE1Mi4zMDI5MzMtMTM5LjI2NCAxNTIuMzAyOTMzSDE2My44NEM3Mi4wODk2IDg2NS4wNDEwNjcgMCA3ODIuNTc0OTMzIDAgNjgyLjI1NzA2N2MwLTEwMy45NzAxMzMgNzcuMDA0OC0xODguMTc3MDY3IDE3Mi4wMzItMTg4LjE3NzA2N2gxLjYzODRDMjAzLjE2MTYgMzgxLjIwMTA2NyAzMDEuNDY1NiAyOTYuOTYgNDE3Ljc5MiAyOTYuOTZ6IG02NS4xOTQ2NjcgMzE1LjE1MzA2N2EzMi44NzA0IDMyLjg3MDQgMCAwIDAtNDEuODQ3NDY3LTAuODUzMzM0Yy04LjEyMzczMyA2LjY5MDEzMy0yNS42IDE4LjYwMjY2Ny01MC40ODMyIDIyLjE4NjY2Ny0zOC41MDI0IDUuMTg4MjY3LTY4LjE2NDI2Ny0xMi45NzA2NjctNzYuMjg4LTE4Ljg0MTYtMTIuNjYzNDY3LTguOTc3MDY3LTMxLjMzNDQtNy4wOTk3MzMtNDEuNjA4NTMzIDMuOTkzNi0xMC4yNzQxMzMgMTEuMDU5Mi04LjEyMzczMyAyNy4zNzQ5MzMgNC41Mzk3MzMgMzYuMzUyIDExLjI2NCA3LjkxODkzMyA0OC44MTA2NjcgMzEuMTI5NiA5OS43Mzc2IDMxLjEyOTYgNy40MDY5MzMgMCAxNS4wODY5MzMtMC42MTQ0IDIyLjk3MTczMy0xLjY3MjUzM2ExNjMuNzcxNzMzIDE2My43NzE3MzMgMCAwIDAgODIuMjYxMzM0LTM1Ljk0MjRjMTEuOTQ2NjY3LTkuODMwNCAxMi40NTg2NjctMjYuMzE2OCAwLjcxNjgtMzYuMzUyeiIgZmlsbD0iIzEyOTZkYiIgcC1pZD0iMjA3NTIiPjwvcGF0aD48cGF0aCBkPSJNODg4LjI1MTczMyA0MjIuNGMwLTE0OC43MTg5MzMtMTEzLjY5ODEzMy0yNjguOC0yNTQuNTMyMjY2LTI2OC44LTgzLjE0ODggMC0xNTYuMTI1ODY3IDQzLjAwOC0yMDMuNjM5NDY3IDEwNy41MiAxNDUuOTIgMCAyNjguMTE3MzMzIDEwOS4yOTQ5MzMgMjk4LjY2NjY2NyAyNTQuNDY0IDkxLjYxMzg2NyAxNy45MiAxNTkuNTA1MDY3IDEwMi4xMjY5MzMgMTU5LjUwNTA2NiAyMDIuNTEzMDY3djguOTQyOTMzQzk2NC42MDggNzIzLjQ1NiAxMDI0IDY1Ny4xNjkwNjcgMTAyNCA1NzQuNzAyOTMzYzAtODAuNjIyOTMzLTU5LjM5Mi0xNDYuOTA5ODY3LTEzNS43NDgyNjctMTUyLjMwMjkzM3oiIGZpbGw9IiMxMjk2ZGIiIG9wYWNpdHk9Ii41MDEiIHAtaWQ9IjIwNzUzIj48L3BhdGg+PC9zdmc+Cg==" />
+<style>
+  :root {
+    --bg: #0b0d13;
+    --panel: rgba(255, 255, 255, .04);
+    --panel-strong: rgba(255, 255, 255, .07);
+    --line: rgba(255, 255, 255, .08);
+    --line-strong: rgba(255, 255, 255, .14);
+    --text: #e8ebf2;
+    --dim: #8f97ab;
+    --dimmer: #5d6475;
+    --ok: #34d399;
+    --err: #f87171;
+    --info: #818cf8;
+    --grad-a: #6366f1;
+    --grad-b: #a78bfa;
+    --radius: 16px;
+  }
+  /* 日间模式：覆盖变量即可，组件样式全部引用变量 */
+  body.light {
+    --bg: #f2f4f8;
+    --panel: rgba(255, 255, 255, .82);
+    --panel-strong: rgba(255, 255, 255, .95);
+    --line: rgba(15, 23, 42, .10);
+    --line-strong: rgba(15, 23, 42, .18);
+    --text: #10141f;
+    --dim: #414b60;
+    --dimmer: #6b7488;
+  }
+  body.light .task { border-top-color: var(--line); }
+  body.light {
+    background:
+      radial-gradient(1100px 520px at 15% -8%, rgba(99, 102, 241, .10), transparent 60%),
+      radial-gradient(900px 480px at 88% -4%, rgba(167, 139, 250, .08), transparent 60%),
+      var(--bg);
+  }
+  /* 日间模式下的局部组件适配（仅覆盖暗色硬编码） */
+  body.light textarea, body.light input[type="text"],
+  body.light input[type="password"] { background: rgba(15, 23, 42, .05); }
+  body.light .pill { background: rgba(15, 23, 42, .06); }
+  body.light .chip { background: rgba(15, 23, 42, .05); }
+  body.light .bar { background: rgba(15, 23, 42, .10); }
+  body.light .result a { color: #4f46e5; }
+  body.light #toast { background: #ffffff; box-shadow: 0 8px 30px rgba(15, 23, 42, .18); }
+  body.light .gate-card, body.light #gate {
+    backdrop-filter: blur(14px);
+  }
+  /* 日间模式：以下元素的暗色硬编码（浅紫 / 浅绿）在浅底上几乎读不出来，统一压成黑色。
+     这些覆盖只作用于 body.light —— **夜间模式一律不动**。 */
+  /* 网盘胶囊：选中只改底色与描边，字色保持不变（原来会变成浅紫 #c7ccf8） */
+  body.light .target-opt.on { color: var(--dim); }
+  /* 胶囊正下方的说明文字（原 #a5b4fc 同样不可读） */
+  body.light .target-item .topt-hint { color: #414b60; }
+  /* 「百度网盘 已就绪」等状态胶囊：字色全黑（原 #b9e8d3 / #5d6475） */
+  body.light .chip,
+  body.light .chip.on,
+  body.light .chip.off { color: #000; }
+  /* 转存记录里的「下载 / 上传」两行 */
+  body.light .relay-detail {
+    color: #000;
+    background: rgba(15, 23, 42, .035);
+    border-color: rgba(15, 23, 42, .09);
+  }
+  body.light .rl-label { color: #000; }
+  /* 「复制链接 / 复制全部 / 提取码」胶囊与「继续（跳过超限）」按钮：
+     原色（#b1b7f7 / #86e0b8）写在**行内 style** 里，普通选择器压不住 → 必须 !important */
+  body.light .pwd-chip,
+  body.light .ok-btn { color: #000 !important; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    min-height: 100vh;
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background:
+      radial-gradient(1100px 520px at 15% -8%, rgba(99, 102, 241, .16), transparent 60%),
+      radial-gradient(900px 480px at 88% -4%, rgba(167, 139, 250, .12), transparent 60%),
+      radial-gradient(700px 700px at 50% 110%, rgba(52, 211, 153, .05), transparent 60%),
+      var(--bg);
+    display: flex; justify-content: center;
+    padding: 48px 20px 64px;
+  }
+  .wrap { width: 100%; max-width: 740px; animation: fadeUp .5s ease both; }
+
+  /* ---------- header ---------- */
+  .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .logo-mark {
+    width: 27px; height: 27px; flex: none; display: block;
+  }
+  .logo-name { font-size: 15px; font-weight: 600; letter-spacing: .5px; }
+  h1 { font-size: 30px; font-weight: 700; line-height: 1.25; letter-spacing: .3px; margin-bottom: 30px; }
+  body.light h1 .grad {
+    background: linear-gradient(92deg, #4f46e5, #9333ea);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  h1 .grad {
+    background: linear-gradient(92deg, #a5b4fc, #d8b4fe);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub { color: var(--dim); font-size: 13.5px; margin: 8px 0 26px; line-height: 1.6; }
+
+  /* ---------- card ---------- */
+  .card {
+    background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 22px;
+    box-shadow: 0 14px 44px rgba(0, 0, 0, .38);
+    backdrop-filter: blur(18px);
+  }
+  textarea {
+    width: 100%; min-height: 96px; resize: vertical;
+    background: rgba(0, 0, 0, .28); color: var(--text);
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; font-size: 14px; line-height: 1.65;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    outline: none; transition: border-color .18s, box-shadow .18s;
+  }
+  textarea::placeholder { color: var(--dimmer); font-family: inherit; }
+  textarea:focus {
+    border-color: rgba(99, 102, 241, .6);
+    box-shadow: 0 0 0 3.5px rgba(99, 102, 241, .18);
+  }
+  .detect {
+    display: flex; align-items: center; gap: 8px;
+    min-height: 26px; margin-top: 10px; font-size: 12.5px; color: var(--dim);
+  }
+  .detect .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .detect .pw { color: var(--dimmer); }
+  .row { display: flex; gap: 12px; margin-top: 12px; align-items: stretch; flex-wrap: wrap; }
+  input[type="text"] {
+    flex: 1; min-width: 170px;
+    background: rgba(0, 0, 0, .28); color: var(--text);
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; font-size: 14px; outline: none;
+    transition: border-color .18s, box-shadow .18s;
+  }
+  input[type="text"]::placeholder { color: var(--dimmer); }
+  input[type="text"]:focus {
+    border-color: rgba(99, 102, 241, .6);
+    box-shadow: 0 0 0 3.5px rgba(99, 102, 241, .18);
+  }
+  button { font-family: inherit; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--grad-a), var(--grad-b));
+    color: #fff; border: 0; border-radius: 12px;
+    padding: 12px 26px; font-size: 14.5px; font-weight: 600;
+    cursor: pointer; letter-spacing: 1px;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, .35);
+    transition: transform .15s, box-shadow .15s, opacity .15s;
+    white-space: nowrap;
+  }
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1.5px);
+    box-shadow: 0 10px 26px rgba(99, 102, 241, .45);
+  }
+  .btn-primary:active:not(:disabled) { transform: translateY(0); }
+  .btn-primary:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+
+  /* ---------- readiness chips ---------- */
+  .chips { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+
+  /* ---------- target picker ---------- */
+  .sec-label {
+    font-size: 12.5px; color: var(--dim); margin: 2px 2px 8px;
+    letter-spacing: .05em;
+  }
+  .sec-label-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .target-row { display: flex; align-items: center; gap: 10px; margin: 14px 2px 14px; }
+  .target-label { font-size: 12.5px; color: var(--dim); flex: none; letter-spacing: .05em; }
+  .btn-go-inline { margin-left: auto; padding: 8px 18px; font-size: 14px; flex: none; }
+  /* 「转存到 / 网盘胶囊 / 立即转存」三者按**纵向中心**对齐：
+     胶囊那一列其实是「胶囊 + 下方说明」两行，说明恒占 14px（gap 3 + 文字 11px）。
+     给标签与按钮补上同样的 14px 下边距，三者视觉中心才落在同一条水平线上
+     （只调 flex-start/center 是没用的——胶囊列的盒子比胶囊本身高）。 */
+  .target-label, .btn-go-inline { margin-bottom: 14px; }
+  .target-picker { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; }
+  /* 每个目标 = 胶囊 + 其正下方的说明（仅选中且带说明时显示文字） */
+  .target-item { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+  .target-item .topt-hint {
+    font-size: 10.5px; line-height: 1; color: #a5b4fc;
+    min-height: 11px; white-space: nowrap;
+  }
+  .target-opt {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 999px; cursor: pointer; user-select: none;
+    font-size: 12.5px; color: var(--dim);
+    border: 1px solid var(--line); background: rgba(255,255,255,.02);
+    transition: all .18s ease;
+  }
+  .target-opt:hover { color: var(--text); border-color: rgba(129,140,248,.4); }
+  .target-opt.on {
+    color: #c7ccf8; border-color: rgba(129,140,248,.65);
+    background: rgba(99,102,241,.14);
+  }
+  .target-opt .pdot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  /* 阿里仅管理员可选：置灰 + 彻底不可点 */
+  .target-opt.locked {
+    color: var(--dimmer); opacity: .4; filter: grayscale(1);
+    cursor: not-allowed; pointer-events: none;
+  }
+
+  /* ---------- 任务内操作（取消） ---------- */
+  .task-actions { margin-top: 8px; display: flex; gap: 8px; }
+  .cancel-btn {
+    font-size: 12px; color: var(--dim); cursor: pointer;
+    background: rgba(255,255,255,.03); border: 1px solid var(--line);
+    border-radius: 8px; padding: 4px 12px; transition: all .15s;
+  }
+  .cancel-btn:hover { color: var(--err); border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.08); }
+
+  /* ---------- 本机文件管理 ---------- */
+  .lfile {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 6px; border-top: 1px solid var(--line);
+  }
+  .lfile.dirrow { cursor: pointer; user-select: none; }
+  .lfile.dirrow:hover { background: rgba(128, 128, 128, .09); }
+  .lfile .lname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; font-size: 13px; }
+  .lfile .lmeta { font-size: 12px; color: var(--dimmer); white-space: nowrap; }
+  .lfile .del { width: 24px; height: 24px; grid-column: auto; grid-row: auto; }
+
+  /* 登录弹窗里的「或」分隔线（口令登录 / Linux.do 登录二选一） */
+  .ld-divider { display: flex; align-items: center; gap: 10px; margin: 12px 0 10px;
+    color: var(--dimmer); font-size: 12px; }
+  .ld-divider::before, .ld-divider::after { content: ""; flex: 1; height: 1px;
+    background: var(--line); }
+  #gateLd:hover { border-color: var(--dim); }
+
+  /* ---------- 生成的链接（最近一次成功，同原链接尺寸文本框） ---------- */
+  #latestLink { min-height: 88px; }
+  .latest-extra { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 2px 0; }
+  .latest-extra:empty { display: none; }
+
+  /* ---------- admin ---------- */
+  /* 右上角一排（主题 / 登录 / 管理员徽标 / 退出）统一 31.2px 高 + 内容垂直居中。
+     不统一的后果：svg 默认走 inline 基线对齐，下方会留出降部空隙；纯文字按钮又按
+     自身行高撑开 —— 几者的视觉中线就差 2~4px（用户实测反馈「没对齐」）。
+     【尺寸】整排按用户要求**等比例放大 20%**：基准 26/12/15/13/6/8 → ×1.2，
+     所以下面是一组带小数的值（31.2 / 14.4 / 18 / 15.6 / 7.2 / 9.6），要再改请整组一起改。 */
+  .admin-box { margin-left: auto; display: flex; align-items: center; gap: 9.6px; }
+  .admin-btn {
+    font-size: 12px; color: var(--dim); background: none; border: none;
+    border-radius: 999px; padding: 4px; cursor: pointer; transition: color .18s ease;
+  }
+  .admin-btn:hover { color: var(--text); }
+  /* 仅作用于右上角这一排；弹窗里的 .admin-btn（取消/返回）不受影响 */
+  .admin-box .admin-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    box-sizing: border-box; height: 31.2px; min-width: 31.2px; padding: 0 8.4px;
+    font-size: 14.4px; line-height: 1;
+  }
+  .admin-box .admin-btn.admin-icon { padding: 0; }   /* 纯图标 → 31.2×31.2 正方形 */
+  .admin-box .admin-btn svg { display: block; }
+  .admin-badge {
+    display: inline-flex; align-items: center; gap: 7.2px;
+    box-sizing: border-box; height: 31.2px; padding: 0 14.4px; line-height: 1;
+    font-size: 14.4px; color: #fbbf24; border: 1px solid rgba(251,191,36,.35);
+    background: rgba(251,191,36,.08); border-radius: 999px;
+  }
+  .admin-badge .out { cursor: pointer; color: var(--dim); font-size: 11px; }
+  .admin-badge .out:hover { color: var(--text); }
+  .owner-tag {
+    font-size: 10.5px; color: var(--dim); border: 1px solid var(--line);
+    border-radius: 4px; padding: 1px 5px; margin-left: 8px; vertical-align: 1px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12px; padding: 5.5px 12px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--dim);
+    background: rgba(0, 0, 0, .18);
+  }
+  .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--dimmer); }
+  .chip.on .dot { background: var(--ok); box-shadow: 0 0 8px rgba(52, 211, 153, .7); }
+  .chip.on { color: #b9e8d3; border-color: rgba(52, 211, 153, .35); }
+  .chip.off { color: var(--dimmer); }
+  .msg { margin-top: 13px; font-size: 13px; min-height: 19px; line-height: 1.5; }
+  .msg.err { color: var(--err); }
+  .msg.info { color: var(--dim); }
+  .msg.warn { color: #fbbf24; }
+  body.light .msg.warn { color: #92400e; }
+
+  /* ---------- tasks ---------- */
+  .tasks-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 2px 6px 12px;
+  }
+  .tasks-head h2 { font-size: 15px; font-weight: 600; }
+  .tasks-head .meta { font-size: 12px; color: var(--dimmer); }
+  .task-list { overflow: hidden; }
+  /* 分页控件（每页 10 条） */
+  .pager {
+    display: none; align-items: center; justify-content: center; gap: 6px;
+    padding: 12px 6px 6px; border-top: 1px solid var(--line);
+    font-size: 12.5px; color: var(--dim); flex-wrap: wrap;
+  }
+  .pager button {
+    min-width: 30px; padding: 4px 9px; border-radius: 8px;
+    border: 1px solid var(--line); background: transparent;
+    color: var(--text); font-size: 12.5px; cursor: pointer; font-family: inherit;
+    transition: border-color .15s, background .15s;
+  }
+  .pager button:hover:not(:disabled) {
+    border-color: var(--line-strong); background: var(--panel);
+  }
+  .pager button:disabled { opacity: .35; cursor: not-allowed; }
+  .pager button.on {
+    border-color: rgba(52, 211, 153, .5); color: var(--ok);
+    background: rgba(52, 211, 153, .1);
+  }
+  .pager .ellip { padding: 0 1px; color: var(--dimmer); }
+  /* 组合转存提示（仅管理员选中多个目标时出现） */
+  .multi-hint {
+    margin-top: 11px; font-size: 12.5px; line-height: 1.6;
+    border-left: 3px solid rgba(99, 102, 241, .55); padding: 6px 12px;
+    background: rgba(99, 102, 241, .08); border-radius: 0 8px 8px 0;
+    color: var(--dim); white-space: pre-line;
+  }
+  .multi-hint b { color: var(--text); font-weight: 600; }
+  .multi-hint.bad {
+    border-left-color: var(--err); background: rgba(248, 113, 113, .08);
+    color: var(--err);
+  }
+  /* 并发排队提示（所有用户可见）：worker 已满时告诉用户「需要等待」 */
+  .queue-hint {
+    display: none; margin: 0 0 12px; padding: 9px 13px; font-size: 12.5px;
+    line-height: 1.6; border-radius: 10px;
+    color: #fbbf24; border: 1px solid rgba(251, 191, 36, .34);
+    background: rgba(251, 191, 36, .1);
+  }
+  body.light .queue-hint {
+    color: #92400e; border-color: rgba(180, 83, 9, .32);
+    background: rgba(251, 191, 36, .2);
+  }
+  /* 组合转存：任务行的组徽标 */
+  .gchip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; padding: 1.5px 7px; border-radius: 999px;
+    border: 1px solid rgba(99, 102, 241, .4); color: #b1b7f7;
+    background: rgba(99, 102, 241, .1); margin-left: 7px; white-space: nowrap;
+  }
+  .gchip.bad { border-color: rgba(248, 113, 113, .45); color: var(--err); background: rgba(248, 113, 113, .1); }
+  /* 组合转存：生成链接区按目标分条列出 */
+  .ghead {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-size: 12.5px; color: var(--dim); margin: 2px 0 7px;
+  }
+  .glist { display: flex; flex-direction: column; gap: 6px; }
+  .gline {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-size: 12.5px; line-height: 1.5;
+  }
+  .gline .gt {
+    min-width: 62px; font-weight: 600; color: var(--text);
+  }
+  .gline a { color: #b1b7f7; text-decoration: none; word-break: break-all; }
+  .gline a:hover { text-decoration: underline; }
+  .gline .gerr { color: var(--err); }
+  .task {
+    display: grid;
+    grid-template-columns: 88px 1fr auto;
+    gap: 6px 16px; align-items: start;
+    padding: 15px 6px;
+    border-top: 1px solid var(--line);
+  }
+  .task:hover { background: rgba(255, 255, 255, .025); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500;
+    padding: 3.5px 11px; border-radius: 999px;
+    background: rgba(255, 255, 255, .05);
+    border: 1px solid var(--line);
+    white-space: nowrap; justify-self: start;
+  }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .pill.running .dot { animation: pulse 1.1s ease-in-out infinite; }
+  .route { font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .plat { display: inline-flex; align-items: center; gap: 6px; }
+  .plat .pdot { width: 8px; height: 8px; border-radius: 3px; flex: none; }
+  .arrow { color: var(--dimmer); font-size: 12px; }
+  .task-link {
+    grid-column: 2 / 3;
+    font-size: 12px; color: var(--dimmer);
+    max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .task-time { font-size: 12px; color: var(--dimmer); white-space: nowrap; }
+  .task-body { grid-column: 2 / 4; font-size: 13px; line-height: 1.6; }
+  .result { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .result a {
+    color: #a5b4fc; text-decoration: none; word-break: break-all;
+    border-bottom: 1px dashed rgba(165, 180, 252, .4);
+    padding-bottom: 1px;
+  }
+  .result a:hover { color: #c7d2fe; border-bottom-style: solid; }
+  .pwd-chip {
+    font-size: 12px; padding: 3px 10px; border-radius: 7px; cursor: pointer;
+    background: rgba(52, 211, 153, .1); border: 1px solid rgba(52, 211, 153, .3);
+    color: #86e0b8; transition: background .15s;
+  }
+  .pwd-chip:hover { background: rgba(52, 211, 153, .18); }
+  .error-text { color: var(--err); font-size: 12.5px; }
+  .cap-note {
+    color: var(--err); font-size: 12.5px; line-height: 1.6;
+    border-left: 3px solid var(--err); padding: 6px 12px; margin: 2px 0;
+    background: rgba(248, 113, 113, .08); border-radius: 0 8px 8px 0;
+    white-space: pre-line;
+  }
+  .pill.needs_confirm {
+    background: rgba(251, 191, 36, .12); border-color: rgba(251, 191, 36, .35);
+    color: #fbbf24;
+  }
+  .over-note {
+    color: #fbbf24; font-size: 12.5px; line-height: 1.6; margin: 2px 0;
+  }
+  .over-list {
+    margin: 6px 0 2px; padding: 0; list-style: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .over-list li {
+    display: flex; justify-content: space-between; gap: 10px;
+    font-size: 12px; color: var(--dim);
+    background: rgba(251, 191, 36, .06);
+    border: 1px solid rgba(251, 191, 36, .2);
+    border-radius: 6px; padding: 4px 9px;
+  }
+  .over-list .of-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .over-list .of-size { color: #fbbf24; flex: none; font-variant-numeric: tabular-nums; }
+  .ok-btn {
+    font-size: 12.5px; padding: 5px 13px; border-radius: 7px; cursor: pointer;
+    background: rgba(52, 211, 153, .12); border: 1px solid rgba(52, 211, 153, .35);
+    color: #86e0b8; transition: background .15s;
+  }
+  .ok-btn:hover { background: rgba(52, 211, 153, .22); }
+  .info-text { color: var(--ok); font-size: 12.5px; line-height: 1.6; }
+  /* 中转进度分两行（下载 / 上传）：消息里含 \n，靠 pre-line 渲染成两行 */
+  .progress-note {
+    color: var(--dim); font-size: 12.5px; margin-bottom: 7px;
+    white-space: pre-line; line-height: 1.55;
+  }
+  /* 转存记录（终态）里的下载 / 上传两行明细，结构化渲染更清晰直观 */
+  .relay-detail {
+    margin: 2px 0 7px; padding: 6px 9px; border-radius: 7px;
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid rgba(255, 255, 255, .07);
+    font-size: 12.5px; line-height: 1.65; color: var(--dim);
+  }
+  .relay-line + .relay-line { margin-top: 2px; }
+  .rl-label {
+    display: inline-block; min-width: 34px; margin-right: 8px;
+    text-align: center; border-radius: 4px; font-size: 11.5px;
+    color: #cbd2ff; background: rgba(99, 102, 241, .18);
+    border: 1px solid rgba(99, 102, 241, .32);
+  }
+  .bar {
+    height: 5px; border-radius: 3px; overflow: hidden;
+    background: rgba(255, 255, 255, .07); position: relative;
+  }
+  .bar > div {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--grad-a), var(--grad-b));
+    transition: width .5s ease; position: relative;
+  }
+  .bar > div::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .35), transparent);
+    animation: shimmer 1.4s linear infinite;
+  }
+  .del {
+    grid-column: 3; grid-row: 1; justify-self: end;
+    width: 26px; height: 26px; border-radius: 8px;
+    background: transparent; color: var(--dimmer);
+    border: 1px solid transparent; cursor: pointer;
+    font-size: 15px; line-height: 1; display: grid; place-items: center;
+    transition: all .15s;
+  }
+  .del:hover { color: var(--err); border-color: rgba(248, 113, 113, .35); background: rgba(248, 113, 113, .08); }
+  .empty {
+    text-align: center; padding: 44px 20px; color: var(--dimmer); font-size: 13.5px;
+    border-top: 1px solid var(--line);
+  }
+  .empty .big { font-size: 30px; margin-bottom: 10px; opacity: .55; }
+  .skel-row { padding: 15px 6px; border-top: 1px solid var(--line); }
+  .skel {
+    height: 12px; width: 60%; border-radius: 6px;
+    background: linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.11), rgba(255,255,255,.05));
+    background-size: 200% 100%; animation: shimmer 1.3s linear infinite;
+  }
+  .skel.short { width: 35%; margin-top: 9px; }
+
+  /* ---------- footer / toast ---------- */
+  footer {
+    text-align: center; color: var(--dimmer); font-size: 12px;
+    margin-top: 10px; letter-spacing: .4px;
+  }
+  #toast {
+    position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%) translateY(14px);
+    background: #1c2130; color: var(--text); border: 1px solid var(--line-strong);
+    padding: 10px 20px; border-radius: 12px; font-size: 13px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .22s, transform .22s;
+    box-shadow: 0 10px 34px rgba(0, 0, 0, .5);
+    z-index: 50;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- auth gate ---------- */
+  #gate {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(8, 10, 15, .82); backdrop-filter: blur(14px);
+    display: none; place-items: center;
+  }
+  #gate.show, #confirmModal.show { display: grid; }
+  #confirmModal {
+    position: fixed; inset: 0; z-index: 120;
+    background: rgba(8, 10, 15, .6); backdrop-filter: blur(8px);
+    display: none; place-items: center;
+  }
+  .confirm-btns { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+  .confirm-btns .admin-btn { padding: 8px 22px; font-size: 13px; }
+  .confirm-btns .btn-primary { padding: 8px 22px; font-size: 13px; }
+  .gate-card {
+    width: min(360px, 88vw); text-align: center;
+    background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+    border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 34px 30px; box-shadow: 0 18px 60px rgba(0, 0, 0, .5);
+    animation: fadeUp .35s ease both;
+  }
+  /* 纯色图标（内联 SVG + currentColor 跟随主题），不再使用彩色 emoji */
+  .gate-card .lock {
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px; color: #818cf8;
+  }
+  .gate-card .lock svg { width: 30px; height: 30px; display: block; }
+  body.light .gate-card .lock { color: #4f46e5; }
+  .gate-card h3 { font-size: 17px; margin-bottom: 6px; }
+  .gate-card p { color: var(--dim); font-size: 12.5px; margin-bottom: 18px; }
+  .gate-card input {
+    width: 100%; text-align: center; letter-spacing: 2px;
+    background: rgba(0, 0, 0, .28); color: var(--text);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 14px; font-size: 14px; outline: none; margin-bottom: 12px;
+  }
+  .gate-card input:focus { border-color: rgba(99, 102, 241, .6); box-shadow: 0 0 0 3.5px rgba(99, 102, 241, .18); }
+  .gate-card button { width: 100%; }
+  .gate-err { color: var(--err); font-size: 12.5px; min-height: 17px; margin-top: 10px; }
+
+  /* ---------- 访客态（未登录）：界面照常显示，但一切交互失效 ---------- */
+  /* 点「原链接 / 转存到 / 立即转存 / 生成的链接」会弹「请登录后使用」
+     （由 GUEST_GUARD 事件委托在捕获阶段拦截）——所以这里**不能**再用
+     pointer-events:none：那样点击根本落不到元素上，也就谈不上提示。 */
+  body.guest .target-picker, body.guest #go { opacity: .5; }
+  body.guest .target-label { opacity: .6; }
+  body.guest #text, body.guest #latestLink { opacity: .55; cursor: not-allowed; }
+  body.guest #go, body.guest .target-opt { cursor: not-allowed; }
+  /* 未登录时**整块隐藏**「转存记录」（含标题与分页）—— 登录后才出现（用户要求） */
+  body.guest #records { display: none; }
+  /* 「原链接」占位提示：浅灰色（比全局 --dimmer 更浅一档） */
+  #text::placeholder { color: #99a3b6; }
+  body.light #text::placeholder { color: #98a2b3; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+  @media (max-width: 560px) {
+    body { padding: 30px 14px 50px; }
+    h1 { font-size: 24px; }
+    .card { padding: 17px; }
+    .task { grid-template-columns: 1fr auto; }
+    .pill { grid-column: 1; }
+    .task-link, .task-body { grid-column: 1 / 3; }
+    .del { grid-column: 2; grid-row: 1; }
+    .task-time { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="logo">
+    <svg class="logo-mark" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <path d="M417.792 296.96c140.9024 0 253.952 120.081067 253.952 268.8h8.192c77.0048 0 139.264 68.096 139.264 152.337067 0 84.206933-62.2592 152.302933-139.264 152.302933H163.84C72.0896 865.041067 0 782.574933 0 682.257067c0-103.970133 77.0048-188.177067 172.032-188.177067h1.6384C203.1616 381.201067 301.4656 296.96 417.792 296.96z m65.194667 315.153067a32.8704 32.8704 0 0 0-41.847467-0.853334c-8.123733 6.690133-25.6 18.602667-50.4832 22.186667-38.5024 5.188267-68.164267-12.970667-76.288-18.8416-12.663467-8.977067-31.3344-7.099733-41.608533 3.9936-10.274133 11.0592-8.123733 27.374933 4.539733 36.352 11.264 7.918933 48.810667 31.1296 99.7376 31.1296 7.406933 0 15.086933-0.6144 22.971733-1.672533a163.771733 163.771733 0 0 0 82.261334-35.9424c11.946667-9.8304 12.458667-26.3168 0.7168-36.352z" fill="#1296db"></path>
+        <path d="M888.251733 422.4c0-148.718933-113.698133-268.8-254.532266-268.8-83.1488 0-156.125867 43.008-203.639467 107.52 145.92 0 268.117333 109.294933 298.666667 254.464 91.613867 17.92 159.505067 102.126933 159.505066 202.513067v8.942933C964.608 723.456 1024 657.169067 1024 574.702933c0-80.622933-59.392-146.909867-135.748267-152.302933z" fill="#1296db" opacity=".501"></path>
+    </svg>
+    <div class="logo-name">网盘转存站</div>
+    <div class="admin-box">
+      <button class="admin-btn admin-icon" id="themeBtn" title="切换日间/夜间模式">🌙</button>
+      <span id="adminSlot"></span>
+    </div>
+  </div>
+
+  <h1>不同网盘，<span class="grad">一键转存</span></h1>
+
+  <section class="card">
+    <div class="sec-label">原链接</div>
+    <textarea id="text" placeholder="粘贴分享链接（含提取码）" spellcheck="false"></textarea>
+    <div class="detect" id="detect"></div>
+    <div class="target-row">
+      <span class="target-label">转存到</span>
+      <div class="target-picker" id="targetPicker"></div>
+      <button class="btn-primary btn-go-inline" id="go">立即转存 →</button>
+    </div>
+    <div class="multi-hint" id="multiHint" style="display:none"></div>
+    <div class="msg" id="msg"></div>
+    <div class="sec-label sec-label-row" style="margin-top:14px"><span>生成的链接</span><span class="pwd-chip" id="copyLinkBtn" style="display:none;background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.35);color:#b1b7f7">复制链接</span></div>
+    <textarea id="latestLink" spellcheck="false"></textarea>
+    <div class="latest-extra" id="latestExtra"></div>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <!-- 转存记录整块：未登录（body.guest）时**整段隐藏**，登录后才出现 -->
+  <div id="records">
+    <div class="tasks-head">
+      <h2>转存记录</h2>
+      <span class="meta" id="count"></span>
+    </div>
+    <div class="queue-hint" id="queueHint"></div>
+    <section class="card" style="padding: 6px 18px 10px;">
+      <div class="task-list" id="tasks">
+        <div class="skel-row"><div class="skel"></div><div class="skel short"></div></div>
+        <div class="skel-row"><div class="skel"></div><div class="skel short"></div></div>
+        <div class="skel-row"><div class="skel"></div><div class="skel short"></div></div>
+      </div>
+      <div class="pager" id="pager"></div>
+    </section>
+  </div>
+
+  <section class="card" id="localCard" style="display:none; padding: 6px 18px 10px;">
+    <div class="tasks-head" style="padding-top: 12px;">
+      <h2>本机高速下载 · 已落盘文件</h2>
+      <span class="meta" id="localMeta"></span>
+    </div>
+    <div class="task-list" id="localFiles"></div>
+  </section>
+
+  <footer>仅小圈子自用 · OpenList + FastAPI 驱动 · 数据不落盘</footer>
+</main>
+<div id="toast" aria-live="polite"></div>
+<div id="confirmModal">
+  <div class="gate-card">
+    <div class="lock" id="confirmIcon">⚠️</div>
+    <h3 id="confirmTitle">确认操作</h3>
+    <p id="confirmText"></p>
+    <div class="confirm-btns">
+      <button class="admin-btn" id="confirmNo">取消</button>
+      <button class="btn-primary" id="confirmYes">确定</button>
+    </div>
+  </div>
+</div>
+<div id="gate">
+  <div class="gate-card">
+    <div class="lock" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4.2" y="10.2" width="15.6" height="10.3" rx="2.4"/>
+        <path d="M7.8 10.2V7.6a4.2 4.2 0 0 1 8.4 0v2.6"/>
+        <circle cx="12" cy="15.3" r="1.15" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+    <h3 style="margin-bottom:20px">本站已启用访问口令</h3>
+    <input type="password" id="gatePwd" placeholder="访问口令" aria-label="访问口令" autocomplete="current-password">
+    <div class="confirm-btns">
+      <button class="admin-btn" id="gateCancel">取消</button>
+      <button class="btn-primary" id="gateGo">登录</button>
+    </div>
+    <div class="ld-divider" id="ldDivider" style="display:none"><span>或</span></div>
+    <button class="admin-btn" id="gateLd" style="display:none; width:100%"
+            title="使用 Linux.do 论坛账号登录（与口令登录平级，均为普通用户身份）">
+      使用 Linux.do 登录
+    </button>
+    <div class="gate-err" id="gateErr"></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let TOKEN = localStorage.getItem("pan_token") || "";
+// 用户身份：浏览器匿名 UUID（任务归属标识）
+let UID = localStorage.getItem("pan_uid");
+if (!UID) {
+  UID = (crypto.randomUUID ? crypto.randomUUID() :
+    "u-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+  localStorage.setItem("pan_uid", UID);
+}
+// 管理员：口令登录换取派生 token
+let ADMIN_TOKEN = localStorage.getItem("pan_admin_token") || "";
+let ADMIN = false;
+// 已选目标平台（数组）：普通用户恒为 1 个；管理员可多选，实现「组合转存」
+// （一条链接 → 最多 GROUP_MAX 个网盘，组内串行执行，最后按目标给出 N 个链接）。
+let TARGETSEL = null;  // null = 尚未初始化（跟随源平台）
+const GROUP_MAX = 5;
+function primaryTarget() { return (TARGETSEL && TARGETSEL[0]) || null; }
+
+/* ---------- 会话状态 ---------- */
+/* 未登录（访客）也照常显示界面，但一切交互失效；登录入口在右上角。
+   AUTHED = 当前会话可用（有有效 token），与「是否管理员」是两件事。 */
+let AUTHED = false;
+
+function authHeaders() {
+  return Object.assign(
+    TOKEN ? {"X-Auth-Token": TOKEN} : {},
+    ADMIN_TOKEN ? {"X-Admin-Token": ADMIN_TOKEN} : {}
+  );
+}
+/* 访客态下这两个输入框都只读：原链接（输入）与生成的链接（输出）都不允许编辑 */
+function setLockedFields(readonly) {
+  for (const id of ["text", "latestLink"]) {
+    const el = $(id);
+    if (el) el.readOnly = readonly;
+  }
+}
+function lockUI() {
+  AUTHED = false;
+  document.body.classList.add("guest");
+  setLockedFields(true);
+}
+function unlockUI() {
+  AUTHED = true;
+  document.body.classList.remove("guest");
+  setLockedFields(false);
+  // 清掉 guest 态写入的「登录后可查看转存记录」空态文案，
+  // 避免登录成功后到首个任务列表响应到达之间短暂残留误导文案。
+  const list = $("tasks");
+  list.innerHTML = "";
+  list._mode = null;
+}
+
+async function api(path, opts = {}) {
+  opts.headers = Object.assign(
+    {"Content-Type": "application/json"},
+    opts.headers || {},
+    authHeaders()
+  );
+  const r = await fetch(path, opts);
+  if (r.status === 401) {
+    // 会话失效 → 退回访客态（不再盖一层拦截遮罩，右上角可重新登录）
+    logout("登录已失效，请重新登录");
+    throw new Error("unauthorized");
+  }
+  return r;
+}
+/* ---------- 登录弹窗（点右上角「登录」才出现：半透明遮罩 + 居中卡片） ---------- */
+function openLogin(err) {
+  $("gate").classList.add("show");
+  $("gateErr").textContent = err || "";
+  $("gatePwd").value = "";
+  setTimeout(() => $("gatePwd").focus(), 50);
+}
+function closeLogin() {
+  $("gate").classList.remove("show");
+  $("gatePwd").value = "";
+  $("gateErr").textContent = "";
+}
+/* 统一登录：同一个输入框。框里写着「访问口令」，但输入**管理员密码**同样有效
+   —— 角色判定在服务端（/api/auth/login）：命中 ADMIN_PASSWORD → 管理员（返回派生
+   token，该 token 同时用作 X-Auth-Token 与 X-Admin-Token）；命中 APP_PASSWORD → 普通。 */
+async function tryGate() {
+  const pwd = $("gatePwd").value.trim();
+  const err = $("gateErr");
+  if (!pwd) { err.textContent = "请输入口令"; return; }
+  err.textContent = "";
+  try {
+    const r = await fetch("/api/auth/login", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({password: pwd})
+    });
+    if (!r.ok) {
+      let d = "";
+      try { d = (await r.json()).detail || ""; } catch (e2) { /* 非 JSON 响应 */ }
+      err.textContent = d || (r.status === 401 ? "口令不正确" : `登录失败（${r.status}）`);
+      return;
+    }
+    const d = await r.json();
+    TOKEN = d.token || pwd;
+    ADMIN = !!d.admin;
+    ADMIN_TOKEN = ADMIN ? TOKEN : "";
+    localStorage.setItem("pan_token", TOKEN);
+    if (ADMIN_TOKEN) localStorage.setItem("pan_admin_token", ADMIN_TOKEN);
+    else localStorage.removeItem("pan_admin_token");
+    // 口令登录与 Linux.do 身份互斥：上一会话是 ld 身份时，切回新的浏览器 UUID
+    // （ld 任务归属 ld_<uid>，口令会话本来就看不到它们）
+    if (typeof UID === "string" && UID.startsWith("ld_")) {
+      UID = (crypto.randomUUID ? crypto.randomUUID()
+        : "u-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+      localStorage.setItem("pan_uid", UID);
+    }
+    closeLogin();
+    unlockUI();
+    renderAdminBox();
+    renderTargets(_lastDetected);
+    loadStatus(); loadTasks();
+  } catch (e) { err.textContent = "网络错误"; }
+}
+$("gateGo").addEventListener("click", tryGate);
+$("gateCancel").addEventListener("click", closeLogin);
+$("gatePwd").addEventListener("keydown", e => { if (e.key === "Enter") tryGate(); });
+
+/* ---------- Linux.do Connect（OAuth2）登录 ----------
+   与口令登录平级、二选一：点按钮 → 后端 302 到 connect.linux.do 授权 →
+   回调后 302 回 /#ld_token=...（token 走 fragment，不进任何访问日志）。
+   身份恒为普通用户（非管理员），owner 跨设备稳定（ld_<uid>）。 */
+$("gateLd").addEventListener("click", () => { window.location.href = "/api/auth/linuxdo/start"; });
+fetch("/api/auth/options").then(r => r.ok ? r.json() : null).then(d => {
+  if (d && d.linuxdo) {
+    $("gateLd").style.display = "";
+    $("ldDivider").style.display = "";
+  }
+}).catch(() => {});
+
+/* OAuth 回调落点：从 fragment 取 token/owner 存入会话。返回是否为 ld 回落。
+   无论成败都返回 false 让 boot 继续走通用恢复——token 无效会自然退回访客态。 */
+function consumeLdFragment() {
+  if (!location.hash.startsWith("#ld_")) return false;
+  const p = new URLSearchParams(location.hash.slice(1));
+  const err = p.get("ld_err");
+  const tok = p.get("ld_token") || "";
+  const owner = p.get("owner") || "";
+  history.replaceState(null, "", location.pathname + location.search);  // 别留在地址栏/历史
+  if (err) { setTimeout(() => openLogin(err), 300); return false; }
+  if (tok && owner.startsWith("ld_")) {
+    TOKEN = tok;
+    UID = owner;                       // Linux.do 身份跨设备稳定
+    localStorage.setItem("pan_token", tok);
+    localStorage.setItem("pan_uid", owner);
+  }
+  return false;
+}
+// 点遮罩空白处 / 按 Esc 关闭：登录是可选的，不能把访客困在弹窗里
+$("gate").addEventListener("click", e => { if (e.target === $("gate")) closeLogin(); });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if ($("gate").classList.contains("show")) closeLogin();
+  if ($("confirmModal").classList.contains("show")) _settleConfirm(false);
+});
+
+/* 访客态：点「原链接 / 转存到 / 立即转存 / 生成的链接」统一提示「请登录后使用」。
+   挂在**捕获阶段**，抢在这些元素自身的处理器之前并阻断它们 —— 这样访客既改不了
+   任何状态，也不会遇到「点了完全没反应」的困惑。登录入口在右上角。 */
+const GUEST_GUARD_SEL = "#text, #latestLink, #go, #targetPicker, .target-label";
+document.addEventListener("click", e => {
+  if (AUTHED) return;
+  const t = e.target;
+  if (!t || typeof t.closest !== "function" || !t.closest(GUEST_GUARD_SEL)) return;
+  e.preventDefault();
+  e.stopPropagation();
+  showToast("请登录后使用");
+}, true);
+
+/* ---------- 确认弹窗（页面中央模态，Promise 化） ---------- */
+let _confirmResolve = null;
+function showConfirm(text, opts = {}) {
+  return new Promise(resolve => {
+    if (_confirmResolve) _confirmResolve(false);   // 上一个未决弹窗按「取消」结算，防 Promise 永久悬挂
+    _confirmResolve = resolve;
+    $("confirmIcon").textContent = opts.icon || "✕";
+    $("confirmTitle").textContent = opts.title || "确认操作";
+    $("confirmText").textContent = text;
+    $("confirmModal").classList.add("show");
+    setTimeout(() => $("confirmYes").focus(), 50); // 焦点入模态：Enter/Esc 即刻可用
+  });
+}
+function _settleConfirm(v) {
+  if (_confirmResolve) { const r = _confirmResolve; _confirmResolve = null; r(v); }
+  $("confirmModal").classList.remove("show");
+}
+$("confirmYes").addEventListener("click", () => _settleConfirm(true));
+$("confirmNo").addEventListener("click", () => _settleConfirm(false));
+$("confirmModal").addEventListener("click", e => {
+  if (e.target === $("confirmModal")) _settleConfirm(false);
+});
+
+/* ---------- 身份 / 退出 ---------- */
+/* 退出 = 回到**访客态**：清 token、清掉界面上属于上一身份的数据
+   （任务列表 / 就绪胶囊 / 生成的链接 / 本机文件），界面仍留在页面上但不可交互，
+   右上角重新出现「登录」。 */
+function logout(msg) {
+  TOKEN = ""; ADMIN_TOKEN = ""; ADMIN = false;
+  localStorage.removeItem("pan_token");
+  localStorage.removeItem("pan_admin_token");
+  loadTasks._all = []; loadTasks._groups = {}; loadTasks._seen = {};
+  _preSettled = null;        // 重新登录后按新会话重新抓「历史任务」快照
+  taskPage = 1;
+  _lastDetected = null;      // 清掉上个会话的源平台识别，别污染重新登录后的目标默认值
+  $("count").textContent = ""; $("pager").innerHTML = ""; $("pager").style.display = "none";
+  $("chips").innerHTML = ""; $("chips")._sig = "";
+  renderQueueHint(null);
+  $("text").value = ""; $("detect").innerHTML = ""; $("msg").textContent = "";
+  $("latestLink").value = ""; $("latestExtra").innerHTML = "";
+  $("copyLinkBtn").style.display = "none"; $("copyLinkBtn").dataset.copy = "";
+  $("localFiles").innerHTML = ""; $("localFiles")._sig = ""; $("localFiles")._files = null;
+  _localExpanded.clear(); $("localCard").style.display = "none";
+  lockUI();
+  renderList([]);            // 访客态 → 转存记录强制为空
+  renderAdminBox();
+  renderTargets(_lastDetected);
+  closeLogin();
+  if (msg) showToast(msg);
+}
+function renderAdminBox() {
+  const box = $("adminSlot");
+  if (!box) return;
+  if (!AUTHED) {             // 访客：右上角唯一的入口是「登录」
+    box.innerHTML = `<button class="admin-btn" id="loginBtn" title="登录">登录</button>`;
+    $("loginBtn").addEventListener("click", () => openLogin(""));
+    return;
+  }
+  // 已登录：管理员多一个身份徽标；退出统一用**图标**（与左侧主题切换同款风格）
+  box.innerHTML =
+    (ADMIN ? `<span class="admin-badge">${ICON_SHIELD} 管理员</span>` : "") +
+    `<button class="admin-btn admin-icon" id="logoutBtn" title="退出登录">${ICON_LOGOUT}</button>`;
+  $("logoutBtn").addEventListener("click", () => logout("已退出登录"));
+}
+
+/* ---------- theme (日间/夜间) ---------- */
+const ICON_MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const ICON_SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2v2.2M12 19.8V22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2 12h2.2M19.8 12H22M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"/></svg>';
+const ICON_SHIELD = '<svg viewBox="0 0 24 24" width="15.6" height="15.6" fill="currentColor" style="vertical-align:-2px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+// 退出图标：与左侧「日间/夜间」切换同款的描边风格（15×15, stroke=currentColor）
+const ICON_LOGOUT = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6"/><path d="M16 16l4-4-4-4"/><path d="M20 12H10"/></svg>';
+function applyTheme(light) {
+  document.body.classList.toggle("light", light);
+  $("themeBtn").innerHTML = light ? ICON_MOON : ICON_SUN;
+  localStorage.setItem("pan_theme", light ? "light" : "dark");
+}
+$("themeBtn").addEventListener("click", () => {
+  applyTheme(!document.body.classList.contains("light"));
+});
+const PLATFORM = {
+  baidu: {label: "百度", color: "#4e6ef2"},
+  quark: {label: "夸克", color: "#7b6cf6"},
+  ali:   {label: "阿里", color: "#ff7a1a", note: "仅入盘·无链接"},
+  uc:    {label: "UC",  color: "#ff5a45"},
+  local: {label: "本机高速", color: "#0ea5a4", note: "生成直链下载"}
+};
+const STATUS = {
+  pending:  {t: "排队",   c: "#94a3b8"},
+  running:  {t: "转存中", c: "#818cf8"},
+  success:  {t: "成功",   c: "#34d399"},
+  failed:   {t: "失败",   c: "#f87171"},
+  cancelled:{t: "取消",   c: "#94a3b8"},
+  needs_confirm:{t: "待确认", c: "#fbbf24"}
+};
+const DETECT = [
+  {key: "baidu", re: /pan\.baidu\.com\/s\/1?([\w\-]{6,})/},
+  {key: "baidu", re: /pan\.baidu\.com\/share\/init\?surl=1?([\w\-]{6,})/},
+  {key: "quark", re: /pan\.quark\.cn\/s\/([\w]+)/},
+  {key: "ali",   re: /(?:www\.)?(?:alipan|aliyundrive)\.com\/s\/([\w]+)/},
+  {key: "uc",    re: /drive\.uc\.cn\/s\/([\w]+)/}
+];
+const PWD_RE = /(?:提取码|访问码|密\s?码|码|pwd|passcode|code)\s*[:：\s]\s*([a-zA-Z0-9]{4})\b/i;
+
+function esc(s) {
+  return (s == null ? "" : String(s)).replace(/[&<>"']/g,
+    c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+/* 相对路径（本机高速 /dl/...）补全为绝对 URL；仅接受 http(s) 与站内相对路径 */
+function absUrl(u) {
+  u = String(u || "");
+  if (/^https?:\/\//i.test(u)) return u;
+  if (u.startsWith("/")) return location.origin + u;
+  return "";
+}
+
+/* ---------- toast & copy ---------- */
+function showToast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove("show"), 1700);
+}
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast("已复制到剪贴板");
+    return;
+  } catch (e) { /* 非安全上下文 / 无权限 → 走下面的降级方案 */ }
+  let ok = false;
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    ok = document.execCommand("copy");
+    ta.remove();
+  } catch (e) { ok = false; }
+  // 降级也可能失败（旧浏览器/权限策略），不能无脑报「已复制」
+  showToast(ok ? "已复制到剪贴板" : "复制失败，请手动选中复制");
+}
+
+function fmtSize(n) {
+  n = Number(n) || 0;
+  if (n < 1024) return n + " B";
+  if (n < 1048576) return (n / 1024).toFixed(1) + " KB";
+  if (n < 1073741824) return (n / 1048576).toFixed(1) + " MB";
+  if (n < 1099511627776) return (n / 1073741824).toFixed(2) + " GB";
+  return (n / 1099511627776).toFixed(2) + " TB";
+}
+
+/* ---------- 完成通知（浏览器 Notification） ---------- */
+function ensureNotifyPermission() {
+  // 必须由用户手势触发才可请求权限（提交按钮点击时调用）
+  if ("Notification" in window && Notification.permission === "default") {
+    try { Notification.requestPermission().catch(() => {}); } catch (e) {}
+  }
+}
+function maybeNotify(t) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const ok = t.status === "success";
+  const cxl = t.status === "cancelled";
+  const title = ok ? "转存完成" : (cxl ? "任务已取消" : "转存失败");
+  const src = (PLATFORM[t.source] || {label: t.source}).label;
+  const dst = (PLATFORM[t.target] || {label: t.target}).label;
+  let body = `${src} → ${dst}`;
+  if (ok && t.result_url) body += "\n" + (absUrl(t.result_url) || t.result_url);
+  else if (!ok) body += "\n" + (t.error || t.message || "");
+  try { new Notification(title, {body, tag: t.id}); } catch (e) {}
+}
+
+/* ---------- target picker（转存目标选择，始终可见） ---------- */
+const TARGETS = ["baidu", "quark", "ali", "uc", "local"];
+// 「阿里」仅管理员可选：作为目标永远拿不到分享链接（官方接口不支持程序化分享），
+// 普通用户选了只会困惑，故对其置灰且不可点。
+function isTargetLocked(key) { return key === "ali" && !ADMIN; }
+// 目标说明显示在「被选中的那个胶囊」正下方（非整行下方）
+function updateTargetHint() {
+  $("targetPicker").querySelectorAll(".topt-hint").forEach(h => {
+    const key = h.dataset.hint;
+    const note = (TARGETSEL.includes(key) && PLATFORM[key]) ? (PLATFORM[key].note || "") : "";
+    h.textContent = note;
+  });
+}
+
+/* 组合转存提示：管理员选中 >1 个目标时，必须（且只能）提交 1 条链接 */
+function linkCount() {
+  return $("text").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+                  .filter(l => DETECT.some(d => d.re.test(l))).length;
+}
+function updateMultiHint() {
+  const box = $("multiHint");
+  if (!ADMIN || !TARGETSEL || TARGETSEL.length < 2) {
+    box.style.display = "none";
+    return;
+  }
+  const n = TARGETSEL.length;
+  const names = TARGETSEL.map(k => (PLATFORM[k] || {}).label || k).join(" · ");
+  const links = linkCount();
+  box.style.display = "";
+  if (links === 0) {
+    // 与「有 2 条以上」必须分开说：粘贴了前端识别不出的链接（拼错域名/只贴了提取码）时，
+    // 提示「请删到只剩 1 条」纯属驴唇不对马嘴。
+    box.classList.add("bad");
+    box.innerHTML = `组合转存：<b>${n}</b> 个目标（${esc(names)}）<br>` +
+      `⚠ 还没识别到分享链接 —— 请粘贴 <b>1 条</b>支持的链接` +
+      `（百度 / 夸克 / 阿里 / UC）。组合转存一次只能提交 1 条。`;
+  } else if (links > 1) {
+    box.classList.add("bad");
+    box.innerHTML = `组合转存：<b>${n}</b> 个目标（${esc(names)}）<br>` +
+      `⚠ 组合转存只接受 <b>1 条</b>链接，当前已识别 <b>${links}</b> 条 —— ` +
+      `请删到只剩 1 条，或改回单选目标走批量转存。`;
+  } else {
+    box.classList.remove("bad");
+    box.innerHTML = `组合转存：1 条链接 → <b>${n}</b> 个网盘（${esc(names)}）<br>` +
+      `按顺序逐个转存，完成后按目标分条给出链接；任一目标失败即整组记失败。`;
+  }
+}
+function renderTargets(sourceKey) {
+  const picker = $("targetPicker");
+  picker.innerHTML = "";
+  // 默认跟随源平台；无源或源不可作目标（如 UC）时默认百度
+  const def = (sourceKey && TARGETS.includes(sourceKey)) ? sourceKey : "baidu";
+  if (!TARGETSEL || !TARGETSEL.length) TARGETSEL = [def];
+  // 过滤失效/被锁定的选中项（身份由管理员切回普通用户时「阿里」会失效）
+  TARGETSEL = TARGETSEL.filter(k => TARGETS.includes(k) && !isTargetLocked(k));
+  if (!TARGETSEL.length) TARGETSEL = [isTargetLocked(def) ? "baidu" : def];
+  if (!ADMIN) TARGETSEL = [TARGETSEL[0]];   // 普通用户恒为单目标（后端另有硬校验）
+  for (const key of TARGETS) {
+    const p = PLATFORM[key];
+    const locked = isTargetLocked(key);
+    // 胶囊 + 其正下方的说明位（说明文字由 updateTargetHint 填）
+    picker.insertAdjacentHTML("beforeend",
+      `<span class="target-item">
+        <span class="target-opt ${TARGETSEL.includes(key) ? "on" : ""}${locked ? " locked" : ""}" data-target="${key}"${locked ? ' title="仅管理员可选"' : ""}>
+          <span class="pdot" style="background:${p.color}"></span>${esc(p.label)}</span>
+        <span class="topt-hint" data-hint="${key}"></span>
+      </span>`);
+  }
+  picker.querySelectorAll(".target-opt").forEach(el => {
+    el.addEventListener("click", () => {
+      if (!AUTHED) return;                       // 访客：不能切换网盘
+      const key = el.dataset.target;
+      if (el.classList.contains("locked")) { showToast("「阿里」仅管理员可选"); return; }
+      if (!ADMIN) {                                  // 普通用户：单选（保持原行为）
+        TARGETSEL = [key];
+      } else if (TARGETSEL.includes(key)) {          // 管理员：多选开关
+        if (TARGETSEL.length === 1) { showToast("至少保留一个转存目标"); return; }
+        TARGETSEL = TARGETSEL.filter(k => k !== key);
+      } else {
+        if (TARGETSEL.length >= GROUP_MAX) {
+          showToast(`组合转存一次最多 ${GROUP_MAX} 个目标`); return;
+        }
+        TARGETSEL = [...TARGETSEL, key];
+      }
+      picker.querySelectorAll(".target-opt").forEach(x =>
+        x.classList.toggle("on", TARGETSEL.includes(x.dataset.target)));
+      updateTargetHint();
+      updateMultiHint();
+    });
+  });
+  updateTargetHint();
+  updateMultiHint();
+}
+
+/* ---------- live platform detect ---------- */
+let _lastDetected = null;
+$("text").addEventListener("input", () => {
+  const text = $("text").value;
+  const box = $("detect");
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  const linkLines = lines.filter(l => DETECT.some(d => d.re.test(l)));
+  let hit = null;
+  for (const d of DETECT) { if (d.re.test(text)) { hit = d; break; } }
+  if (linkLines.length > 1) {
+    box.innerHTML = `<span class="dot" style="background:var(--info)"></span>` +
+      `已识别 <b style="color:var(--text)">${linkLines.length}</b> 条链接 · 将批量提交`;
+  } else if (hit) {
+    const pw = PWD_RE.exec(text);
+    const plat = PLATFORM[hit.key];
+    box.innerHTML = `<span class="dot" style="background:${plat.color}"></span>` +
+      `已识别：<b style="color:var(--text)">${plat.label}</b>` +
+      (pw ? ` <span class="pw">· 提取码 ${esc(pw[1])}</span>` : "");
+  } else if (text.trim()) {
+    box.innerHTML = `<span class="dot" style="background:var(--dimmer)"></span>未识别到支持的链接`;
+  } else {
+    box.innerHTML = "";
+  }
+  // 仅当识别到的平台变化时才重渲染目标选择器，
+  // 避免用户手动选择的目标在继续编辑文本时被重置回源平台
+  const key = hit ? hit.key : null;
+  if (key !== _lastDetected) {
+    _lastDetected = key;
+    renderTargets(key);
+  }
+  updateMultiHint();   // 链接条数变化会影响「组合转存只允许 1 条」的校验提示
+});
+
+/* ---------- 并发 / 排队提示（所有登录用户可见） ---------- */
+/* 后台同时能跑几个转存由 TASK_WORKERS 决定，超出的任务在队列里等。
+   这里把「正在转存 / 排队等待」明示出来，避免用户以为卡住了。 */
+function renderQueueHint(q) {
+  const el = $("queueHint");
+  if (!el) return;
+  const workers = (q && q.workers) || 0;
+  const running = (q && q.running) || 0;
+  const waiting = (q && q.waiting) || 0;
+  if (!workers || (running < workers && waiting === 0)) {
+    el.style.display = "none"; el.textContent = ""; return;
+  }
+  const parts = [];
+  if (running) parts.push(`${running} 个正在转存`);
+  if (waiting) parts.push(`${waiting} 个排队等待`);
+  el.textContent = `⏳ 后台同时最多转存 ${workers} 个，当前${parts.join("、")}。` +
+    (waiting ? "排队任务会在前面的完成后自动开始，无需重新提交。"
+             : "新提交的任务将排队等待。");
+  el.style.display = "";
+}
+function queuedMsg(q) {
+  const workers = (q && q.workers) || "?";
+  const n = (q && q.running) || 0;
+  const w = (q && q.waiting) || 0;
+  return `后台同时最多转存 ${workers} 个，当前正在转存 ${n} 个` +
+    (w ? `、排队 ${w} 个` : "") + "，你的任务需等待前面的完成后自动开始。";
+}
+
+/* ---------- readiness chips（仅管理员可见） ---------- */
+async function loadStatus() {
+  if (!AUTHED) return;             // 访客态不发请求（省掉无谓的 401）
+  const tok = TOKEN;               // 会话快照：响应到达前登出/换号 → 整包丢弃
+  try {
+    const r = await api("/api/status");
+    const s = await r.json();
+    if (TOKEN !== tok) return;     // 过期响应不落任何全局状态（防登出后 ADMIN 残留）
+    renderQueueHint(s.queue);        // 排队提示：所有身份都可见
+    const wasAdmin = ADMIN;
+    ADMIN = !!s.admin;
+    if (ADMIN !== wasAdmin) {
+      renderAdminBox();
+      renderTargets(_lastDetected);   // 身份变化 → 重渲染目标（阿里可选性随身份变）
+      // 身份切换后强制重建任务行（owner 标签随身份变化，差量更新不会重绘已有行）
+      const list = $("tasks");
+      list.innerHTML = ""; list._mode = null;
+      loadTasks();
+    }
+    loadLocalFiles();   // 本机文件管理卡片（仅管理员显示）
+    const chips = $("chips");
+    if (!ADMIN || !s.ready || !Array.isArray(s.platforms)) {
+      if (chips._sig !== "") { chips.innerHTML = ""; chips._sig = ""; }
+      return;                        // 就绪状态仅管理员可见（响应结构异常时不炸）
+    }
+    // 内容签名比对：没变化就不重绘（否则 15s 轮询每次全量 innerHTML 一闪）
+    let html = "";
+    const readyMap = s.ready.adapters || {};
+    for (const p of s.platforms) {
+      if (!(p.key in PLATFORM)) continue;
+      const ready = readyMap[p.key];
+      html += `<span class="chip ${ready ? "on" : "off"}"><span class="dot"></span>${esc(p.label)}${ready ? " 已就绪" : " 未配置"}</span>`;
+    }
+    html += `<span class="chip ${s.openlist_ok ? "on" : "off"}"><span class="dot"></span>OpenList ${s.openlist_ok ? "已连接" : "未连接"}</span>`;
+    if (s.auth_open) {
+      html += `<span class="chip off" title="未设置 APP_PASSWORD：任何能访问本服务的人都能提交转存。公网暴露前请在 .env 配置。">` +
+        `<span class="dot"></span>⚠ 访问口令未设置</span>`;
+    }
+    if (chips._sig !== html) {
+      chips.innerHTML = html;
+      chips._sig = html;
+    }
+  } catch (e) { /* 静默 */ }
+}
+
+/* ---------- submit ---------- */
+async function submitTask() {
+  if (!AUTHED) return;              // 访客：点「立即转存」不产生任何反应
+  const text = $("text").value.trim();
+  if (!text) { setMsg("先粘贴分享链接", "err"); return; }
+  if (!TARGETSEL || !TARGETSEL.length) { setMsg("先选择转存目标", "err"); return; }
+  ensureNotifyPermission();  // 用户手势内请求通知权限
+  const lines = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  const multi = ADMIN && TARGETSEL.length > 1;
+  const nLinks = linkCount();
+  if (multi && nLinks !== 1) {
+    setMsg(nLinks === 0
+      ? "组合转存需要 1 条分享链接：当前没识别到可用的链接"
+      : "组合转存只支持 1 条链接：请删到只剩 1 条，或改回单选目标做批量转存", "err");
+    return;
+  }
+  $("go").disabled = true;
+  try {
+    if (multi) {                            // 组合转存：1 条链接 → 多个网盘（组内串行）
+      setMsg(`组合转存：1 条链接 → ${TARGETSEL.length} 个网盘…`, "info");
+      const r = await api("/api/transfer", {
+        method: "POST",
+        body: JSON.stringify({text: text, password: null,
+                              targets: TARGETSEL, owner_id: UID})
+      });
+      const data = await r.json();
+      if (!r.ok) { setMsg(data.detail || "组合转存提交失败", "err"); return; }
+      setMsg(`组合转存已创建 ${(data.task_ids || []).length} 个子任务，` +
+             (data.queued ? queuedMsg(data.queue) : "将按顺序逐个转存…"),
+             data.queued ? "warn" : "info");
+      $("detect").innerHTML = "";
+      taskPage = 1;          // 新任务排在最前，回到第 1 页让用户看到
+      loadStatus(); loadTasks();
+      return;
+    }
+    if (lines.length > 1) {                 // 批量：多行链接
+      setMsg(`批量提交 ${lines.length} 条…`, "info");
+      const r = await api("/api/transfer/batch", {
+        method: "POST",
+        body: JSON.stringify({text: text, password: null, target: primaryTarget(),
+                              owner_id: UID})
+      });
+      const data = await r.json();
+      if (!r.ok) { setMsg(data.detail || "批量提交失败", "err"); return; }
+      if (data.failed) {
+        const firstErr = (data.results.find(x => !x.ok) || {}).error || "";
+        setMsg(`批量完成：成功 ${data.ok} 条，失败 ${data.failed} 条` +
+               (firstErr ? `（例：${firstErr}）` : ""), "err");
+      } else {
+        setMsg(`已创建 ${data.ok} 个任务，正在转存…`, "info");
+      }
+      $("detect").innerHTML = "";
+      taskPage = 1;          // 新任务排在最前，回到第 1 页让用户看到
+      loadStatus(); loadTasks();
+      return;
+    }
+    setMsg("提交中…", "info");
+    const r = await api("/api/transfer", {
+      method: "POST",
+      body: JSON.stringify({text: text, password: null,
+                            target: primaryTarget(), owner_id: UID})
+    });
+    const data = await r.json();
+    if (!r.ok) { setMsg(data.detail || "提交失败", "err"); return; }
+    setMsg(data.deduped ? "该链接近期已提交，已复用原任务"
+           : data.queued ? "任务已提交，" + queuedMsg(data.queue)
+                         : "任务已创建，正在转存…",
+           data.queued ? "warn" : "info");
+    // 保留原链接内容，方便用户复制或再次转存（直到用户自己删除）
+    $("detect").innerHTML = "";
+    taskPage = 1;            // 新任务排在最前，回到第 1 页让用户看到
+    loadStatus(); loadTasks();
+  } catch (e) {
+    if (e && e.message === "unauthorized") return;   // 401：api() 已登出并 toast，别再覆盖成误导性的「网络错误」
+    setMsg("网络错误：" + (e && e.message ? e.message : e), "err");
+  }
+  finally { $("go").disabled = false; }
+}
+$("go").addEventListener("click", submitTask);
+$("text").addEventListener("keydown", e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "Enter") submitTask();
+});
+
+function setMsg(t, cls) { const m = $("msg"); m.textContent = t; m.className = "msg " + (cls || ""); }
+
+/* ---------- task list（差量更新：只动状态与进度/结果，不整列重绘） ---------- */
+function rel(ts) {
+  const d = Date.now() / 1000 - ts;
+  if (d < 60) return "刚刚";
+  if (d < 3600) return Math.floor(d / 60) + " 分钟前";
+  if (d < 86400) return Math.floor(d / 3600) + " 小时前";
+  return Math.floor(d / 86400) + " 天前";
+}
+function platBadge(key) {
+  const p = PLATFORM[key] || {label: key, color: "#5d6475"};
+  return `<span class="plat"><span class="pdot" style="background:${p.color}"></span>${esc(p.label)}</span>`;
+}
+const EMPTY_HTML = `<div class="empty"><div class="big">📦</div>还没有转存记录<br>粘贴一个分享链接试试</div>`;
+// 访客态（未登录）：转存记录**强制显示为空**
+const EMPTY_GUEST_HTML = `<div class="empty"><div class="big">🔒</div>登录后可查看转存记录</div>`;
+
+function buildTask(t) {
+  const el = document.createElement("div");
+  el.className = "task";
+  el.dataset.id = t.id;
+  el.dataset.status = t.status;
+  // 入场动画只在创建时执行一次，之后的差量更新不会重播
+  el.style.animation = "fadeUp .35s ease both";
+  // 管理员视图：显示任务归属者短标识
+  const ownerTag = (ADMIN && t.owner_id)
+    ? `<span class="owner-tag" title="提交者标识">${esc(String(t.owner_id).slice(0, 6))}</span>` : "";
+  const gi = t.group_id ? (loadTasks._groups || {})[t.group_id] : null;
+  // 组合转存：把组标识/组大小挂到行上，供「取消/删除」的确认文案区分「整组」
+  if (t.group_id) {
+    el.dataset.group = t.group_id;
+    el.dataset.gsize = String(gi ? gi.size : 0);
+  }
+  const groupTag = gi
+    ? `<span class="gchip${gi.status === "failed" ? " bad" : ""}" title="组合转存：${gi.size} 个目标 · 整组状态：${(STATUS[gi.status] || {}).t || gi.status}">组合 ${t.group_seq}/${gi.size}</span>` : "";
+  el.innerHTML = `
+    <span class="pill"><span class="dot"></span><span class="pt"></span></span>
+    <span class="route">${platBadge(t.source)}<span class="arrow">→</span>${platBadge(t.target)}${ownerTag}${groupTag}</span>
+    <button class="del" data-del="${esc(t.id)}" title="删除记录">×</button>
+    <span class="task-link" title="${esc(t.share_url)}">${esc(t.share_url)}</span>
+    <span class="task-time"></span>
+    <span class="task-body"></span>`;
+  return el;
+}
+
+function resultHtml(t, safeUrl) {
+  return `<div class="result">
+    <a href="${esc(safeUrl)}" target="_blank" rel="noopener">${esc(safeUrl)}</a>
+    ${t.result_pwd ? `<span class="pwd-chip" data-copy="${esc(t.result_pwd)}" title="点击复制">提取码 ${esc(t.result_pwd)}</span>` : ""}
+    <span class="pwd-chip" data-copy="${esc(safeUrl)}" style="background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.35);color:#b1b7f7">复制链接</span>
+  </div>`;
+}
+
+// 转存记录里的「下载 / 上传」两行明细：取自结构化 progress_detail（跨平台中转才有）。
+// 比解析自由文本 message 稳，且终态也能保住两行（message 完成后会变「复制完成」单行）。
+function relayDetailHtml(t) {
+  const d = t.progress_detail;
+  if (!d || !d.relay) return "";
+  const line = (label, done, total) => {
+    const pct = total ? Math.round((done || 0) * 100 / total) : 0;
+    return `<div class="relay-line"><span class="rl-label">${label}</span>`
+         + `${fmtSize(done || 0)} / ${fmtSize(total || 0)}（${pct}%）</div>`;
+  };
+  return `<div class="relay-detail">`
+       + line("下载", d.dl_done, d.total)
+       + line("上传", d.ul_done, d.total)
+       + `</div>`;
+}
+
+function updateTaskEl(el, t) {
+  const stKey = STATUS[t.status] ? t.status : "failed";
+  const st = STATUS[stKey];
+  el.dataset.status = t.status;
+  // ① 状态胶囊：仅状态变化时才改
+  const pill = el.querySelector(".pill");
+  if (pill.dataset.st !== stKey) {
+    pill.dataset.st = stKey;
+    pill.className = "pill " + stKey;
+    pill.querySelector(".dot").style.background = st.c;
+    pill.querySelector(".pt").textContent = st.t;
+  }
+  // ② 时间：纯文本更新，不重建节点
+  const timeEl = el.querySelector(".task-time");
+  const tstr = rel(t.created_at);
+  if (timeEl.textContent !== tstr) timeEl.textContent = tstr;
+  // ②b 组合转存组徽标：随整组状态刷新（任一子任务失败 → 整组标红）
+  if (t.group_id) {
+    const chip = el.querySelector(".gchip");
+    const gi = (loadTasks._groups || {})[t.group_id];
+    if (chip && gi) {
+      const txt = `组合 ${t.group_seq}/${gi.size}`;
+      if (chip.textContent !== txt) chip.textContent = txt;
+      chip.title = `组合转存：${gi.size} 个目标 · 整组状态：` +
+                   ((STATUS[gi.status] || {}).t || gi.status);
+      chip.classList.toggle("bad", gi.status === "failed");
+    }
+  }
+  // ③ 结果区：进行中走结构化节点更新（进度条不重置）；终态仅内容变化时替换
+  const body = el.querySelector(".task-body");
+  if (stKey === "running" || stKey === "pending") {
+    if (body._mode !== "prog") {
+      body._mode = "prog";
+      body.innerHTML = '<div class="progress-note"></div><div class="bar"><div style="width:3%"></div></div>'
+        + `<div class="task-actions"><button class="cancel-btn" data-cancel="${esc(t.id)}">取消任务</button></div>`;
+    }
+    const note = body.querySelector(".progress-note");
+    const fill = body.querySelector(".bar > div");
+    // 中转阶段 message 已含「（N%）」，避免重复追加
+    const msgText = t.message || "等待中";
+    const txt = msgText.includes("%") ? msgText
+                                      : msgText + " " + (Number(t.progress) || 0) + "%";
+    if (note.textContent !== txt) note.textContent = txt;
+    const w = Math.max(Number(t.progress) || 0, 3) + "%";
+    if (fill.style.width !== w) fill.style.width = w;
+  } else if (stKey === "needs_confirm") {
+    const sig = (t.over_files || []).map(f => f.name + f.size).join("|");
+    if (body._mode !== "confirm" || body._h !== sig) {
+      body._mode = "confirm";
+      body._h = sig;
+      // 容量优先取后端结构化字段 cap_gb；正则从 message 反解仅作旧数据兜底
+      let capTxt = "";
+      if (t.cap_gb) capTxt = `（约 ${t.cap_gb}GB）`;
+      else {
+        const capM = (t.message || "").match(/约\s*([\d.]+)GB/);
+        if (capM) capTxt = `（约 ${capM[1]}GB）`;
+      }
+      const over = (t.over_files || []).map(f =>
+        `<li><span class="of-name">${esc(f.name)}</span>`
+        + `<span class="of-size">${fmtSize(f.size)}</span></li>`).join("");
+      body.innerHTML = `<div class="over-note">⚠ 以下文件超过目标盘单文件上限${capTxt}，将被跳过：</div>`
+        + `<ul class="over-list">${over || "<li>（无清单）</li>"}</ul>`
+        + `<div class="task-actions">`
+        +   `<button class="ok-btn" data-confirm="${esc(t.id)}">继续（跳过超限）</button>`
+        +   `<button class="cancel-btn" data-cancel="${esc(t.id)}">取消</button>`
+        + `</div>`;
+    }
+  } else {
+    const rawUrl = t.result_url || "";
+    const safeUrl = absUrl(rawUrl);
+    let html = "";
+    if (stKey === "success") {
+      const detail = relayDetailHtml(t);   // 跨平台中转：下载 / 上传两行明细
+      if (safeUrl) html = detail + resultHtml(t, safeUrl);
+      else html = detail + `<span class="info-text">✓ ${esc(t.message || "转存完成")}</span>`;
+    }
+    else if (stKey === "failed") {
+      const err = t.error || "转存失败";
+      if (err.includes("单文件上限")) {
+        html = `<div class="cap-note">✕ ${esc(err)}</div>`;
+      } else {
+        html = `<span class="error-text">✕ ${esc(err)}</span>`;
+      }
+    }
+    else if (stKey === "cancelled") html = `<span class="info-text" style="color:var(--dim)">■ 已取消</span>`;
+    if (body._mode !== "done" || body._h !== html) {
+      body._mode = "done"; body._h = html;
+      body.innerHTML = html;
+    }
+  }
+}
+
+/* ---------- 转存记录分页（每页 10 条） ---------- */
+const PAGE_SIZE = 10;
+let taskPage = 1;
+
+function renderPager(total, pages) {
+  const p = $("pager");
+  if (total <= PAGE_SIZE) { p.innerHTML = ""; p.style.display = "none"; return; }
+  p.style.display = "flex";
+  const btn = (label, page, {disabled = false, on = false} = {}) =>
+    `<button data-page="${page}"${disabled ? " disabled" : ""}` +
+    `${on ? ' class="on"' : ""}>${label}</button>`;
+  let html = btn("‹", taskPage - 1, {disabled: taskPage <= 1});
+  // 页码：首/末页固定，当前页及其前后各一页；其余折叠为省略号
+  const keep = new Set([1, pages, taskPage, taskPage - 1, taskPage + 1]);
+  let last = 0;
+  for (let i = 1; i <= pages; i++) {
+    if (!keep.has(i)) continue;
+    if (last && i - last > 1) html += `<span class="ellip">…</span>`;
+    html += btn(String(i), i, {on: i === taskPage});
+    last = i;
+  }
+  html += btn("›", taskPage + 1, {disabled: taskPage >= pages});
+  p.innerHTML = html;
+}
+
+function renderList(allTasks) {
+  const list = $("tasks");
+  if (!AUTHED) {                     // 访客：转存记录强制显示为空
+    if (list._mode !== "guest") { list.innerHTML = EMPTY_GUEST_HTML; list._mode = "guest"; }
+    $("count").textContent = "";
+    $("pager").innerHTML = ""; $("pager").style.display = "none";
+    return;
+  }
+  const total = allTasks.length;
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  // 页码夹取：记录被删/变少时不会停在不存在的空页
+  if (taskPage > pages) taskPage = pages;
+  if (taskPage < 1) taskPage = 1;
+  if (!total) {
+    if (list._mode !== "empty") { list.innerHTML = EMPTY_HTML; list._mode = "empty"; }
+    $("count").textContent = "";
+    $("pager").innerHTML = ""; $("pager").style.display = "none";
+    return;
+  }
+  const tasks = allTasks.slice((taskPage - 1) * PAGE_SIZE, taskPage * PAGE_SIZE);
+  if (list._mode !== "list") { list.innerHTML = ""; list._mode = "list"; }
+  const ids = new Set(tasks.map(t => t.id));
+  // 移除不在本页的行（含跨页切换时上一页的残留行）
+  list.querySelectorAll(".task[data-id]").forEach(el => {
+    if (!ids.has(el.dataset.id)) el.remove();
+  });
+  // 按服务端顺序插入/更新
+  let prev = null;
+  for (const t of tasks) {
+    let el = list.querySelector(`.task[data-id="${t.id}"]`);
+    if (!el) el = buildTask(t);
+    updateTaskEl(el, t);
+    const ref = prev ? prev.nextSibling : list.firstChild;
+    if (el !== ref) list.insertBefore(el, ref);
+    prev = el;
+  }
+  $("count").textContent = total + " 条记录" +
+    (pages > 1 ? ` · 第 ${taskPage}/${pages} 页` : "") +
+    (total >= 100 ? " · 仅显示最近 100 条" : "");
+  renderPager(total, pages);
+}
+
+// 翻页：只重渲染当前页（数据取自最近一次 loadTasks 的全量结果）
+$("pager").addEventListener("click", e => {
+  const b = e.target.closest("button[data-page]");
+  if (!b || b.disabled) return;
+  const p = Number(b.dataset.page);
+  if (!Number.isFinite(p) || p === taskPage) return;
+  taskPage = p;
+  renderList(loadTasks._all || []);
+  const head = $("tasks").getBoundingClientRect().top + window.scrollY - 96;
+  window.scrollTo({ top: Math.max(0, head), behavior: "smooth" });
+});
+
+/* ---------- 生成的链接（只保留「本次会话」生成的结果） ---------- */
+// 「生成的链接」展示本次会话新跑出来的结果：某个任务一旦成功生成链接，就不会被更晚的
+// 失败/无链接任务（如阿里降级）冲掉。**但打开页面时不回填历史链接（默认留空）** ——
+// 见上面的 _preSettled / isFreshTask。
+// 「复制链接」按钮常驻标题右侧，仅在有链接时显示。
+function setCopyBtn(url) {
+  const btn = $("copyLinkBtn");
+  if (url) { btn.style.display = ""; btn.dataset.copy = url; }
+  else { btn.style.display = "none"; btn.dataset.copy = ""; }
+}
+/* 组合转存结果：按目标分条列出整组的链接（失败目标给人话原因）+ 一键复制全部 */
+function renderGroupResult(gi) {
+  const linkBox = $("latestLink");
+  const extra = $("latestExtra");
+  const urls = gi.kids.filter(k => k.result_url).map(k => absUrl(k.result_url));
+  const sig = "grp:" + gi.kids.map(k => k.id + "|" + k.status + "|" +
+                                      (k.result_url || "") + "|" + (k.error || "")).join(",");
+  if (linkBox._mode === sig) return;
+  linkBox._mode = sig;
+  const stLabel = (STATUS[gi.status] || {}).t || gi.status;
+  const rows = gi.kids.map(k => {
+    const name = (PLATFORM[k.target] || {}).label || k.target;
+    const cell = k.result_url
+      ? `<a href="${esc(absUrl(k.result_url))}" target="_blank" rel="noopener">${esc(absUrl(k.result_url))}</a>`
+        + (k.result_pwd
+            ? `<span class="pwd-chip" data-copy="${esc(k.result_pwd)}" title="点击复制">提取码 ${esc(k.result_pwd)}</span>`
+            : "")
+      : `<span class="gerr">${esc(k.error || k.message || (STATUS[k.status] || {}).t || k.status)}</span>`;
+    return `<div class="gline"><span class="gt">${esc(name)}</span>${cell}</div>`;
+  }).join("");
+  linkBox.value = urls.join("\n") || "";
+  setCopyBtn(urls[0] || "");
+  extra.innerHTML =
+    `<div class="ghead"><span>组合转存 · ${gi.size} 个目标 · 整组状态：${esc(stLabel)}</span>`
+    + (urls.length > 1
+        ? `<span class="pwd-chip" data-copyall="${esc(urls.join("\n"))}" title="复制全部链接" style="background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.35);color:#b1b7f7">复制全部（${urls.length}）</span>`
+        : "")
+    + `</div><div class="glist">${rows}</div>`;
+}
+
+function updateLatestResult(tasks) {
+  const linkBox = $("latestLink");
+  const extra = $("latestExtra");
+  // 组合转存：最近一条记录属于某个组 → 整组按目标分条展示（优先于单条逻辑）
+  const head = tasks[0];
+  const headGroup = (head && head.group_id)
+    ? (loadTasks._groups || {})[head.group_id] : null;
+  // 组合转存：只有当这个组里有「本次会话新跑出来」的子任务时才展示；
+  // 历史组（打开页面时已全部终态）不回填，避免看到上次的旧链接。
+  if (headGroup && headGroup.size > 1 && headGroup.kids.some(isFreshTask)) {
+    renderGroupResult(headGroup); return;
+  }
+  // 只在本次会话新产生的任务里挑：优先取最近一条「有链接」的成功任务
+  const fresh = tasks.filter(isFreshTask);
+  const withLink = fresh.find(t => t.status === "success" && absUrl(t.result_url));
+  const terminal = fresh.find(t => t.status === "success" || t.status === "failed");
+  if (withLink) {
+    const url = absUrl(withLink.result_url);
+    const pwd = withLink.result_pwd || "";
+    const sig = "link:" + withLink.id + ":" + pwd;
+    if (linkBox._mode === sig) return;
+    linkBox._mode = sig;
+    linkBox.value = url;
+    setCopyBtn(url);
+    extra.innerHTML = pwd
+      ? `<span class="pwd-chip" data-copy="${esc(pwd)}" title="点击复制">提取码 ${esc(pwd)}</span>` : "";
+    return;
+  }
+  setCopyBtn("");
+  if (terminal && terminal.status === "failed") {
+    const sig = "fail:" + terminal.id;
+    if (linkBox._mode === sig) return;
+    linkBox._mode = sig;
+    linkBox.value = "";
+    extra.innerHTML = `<span class="error-text">✕ ${esc(terminal.error || "转存失败")}</span>`;
+    return;
+  }
+  if (terminal) {   // 成功但无链接（如阿里降级）
+    const sig = "nolnk:" + terminal.id;
+    if (linkBox._mode === sig) return;
+    linkBox._mode = sig;
+    linkBox.value = terminal.message || "转存完成";
+    extra.innerHTML = "";
+    return;
+  }
+  if (linkBox._mode !== "empty") {
+    linkBox.value = "";
+    extra.innerHTML = "";
+    linkBox._mode = "empty";
+  }
+}
+
+/* 组合转存整组状态派生（与后端 Orchestrator.group_status 同规则）：
+   任一子任务失败 → 整组失败；全组都取消才算取消；否则按 待确认 / 进行中 / 成功 递进。 */
+function groupStatus(kids) {
+  const sts = kids.map(k => k.status);
+  if (!sts.length) return "pending";
+  if (sts.every(s => s === "cancelled")) return "cancelled";
+  if (sts.some(s => s === "failed")) return "failed";
+  if (sts.some(s => s === "needs_confirm")) return "needs_confirm";
+  if (sts.some(s => s === "pending" || s === "running")) return "running";
+  if (sts.some(s => s === "cancelled")) return "cancelled";
+  return "success";
+}
+
+/* 「生成的链接」区只展示**本次会话新跑出来**的结果。
+   打开页面时已处于终态的任务属于历史，不回填（默认留空）——否则刷新页面就会看到
+   上一次转存的旧链接，让人误以为刚刚转存成功。首次成功加载时抓一次快照，之后不再更新。 */
+const SETTLED_STATUS = ["success", "failed", "cancelled"];
+let _preSettled = null;
+function isFreshTask(t) {
+  return !(_preSettled && _preSettled.has(t.id));
+}
+
+let _tasksBusy = false;    // 在飞守卫：2s 轮询不等上一拍返回就再发，慢响应会覆盖新状态
+let _tasksSeq = 0;         // 响应序号：只有最新一次请求的结果允许落 UI/状态
+async function loadTasks() {
+  if (!AUTHED) return;             // 访客态不发请求（记录区强制为空）
+  if (_tasksBusy) return;
+  _tasksBusy = true;
+  const seq = ++_tasksSeq;
+  const tok = TOKEN;               // 会话快照：响应到达前登出/换号 → 整包丢弃
+  try {
+    // 管理员看全部；普通用户只看自己的（owner=UID）
+    // 一次拉近 100 条（服务端上限），前端按 PAGE_SIZE=10 翻页；
+    // 状态快照仍覆盖全部拉取结果，保证非本页任务的终态通知不丢。
+    const qs = ADMIN ? "limit=100" : `limit=100&owner=${encodeURIComponent(UID)}`;
+    const r = await api("/api/tasks?" + qs);
+    const data = await r.json();
+    if (seq !== _tasksSeq || TOKEN !== tok) return;   // 过期响应/会话切换：整包丢弃
+    const tasks = data.tasks || [];
+    loadTasks._all = tasks;
+    // 首次成功加载时抓「已终态任务」快照：这些算历史，不回填到「生成的链接」区
+    if (_preSettled === null) {
+      _preSettled = new Set(tasks.filter(
+        t => SETTLED_STATUS.includes(t.status)).map(t => t.id));
+    }
+    // 组合转存：按 group_id 归集，算出组大小与**整组状态**（任一子任务失败 → 整组失败）
+    const groups = {};
+    for (const t of tasks) {
+      if (t.group_id) (groups[t.group_id] = groups[t.group_id] || []).push(t);
+    }
+    for (const gid in groups) {
+      const kids = groups[gid].slice().sort((a, b) => (a.group_seq || 0) - (b.group_seq || 0));
+      groups[gid] = { kids, size: kids.length, status: groupStatus(kids) };
+    }
+    loadTasks._groups = groups;
+    // 状态快照：任一任务从进行中落入终态（成功/失败）时，清掉提交时的提示语
+    const prev = loadTasks._seen || {};
+    for (const t of tasks) {
+      const was = prev[t.id];
+      if (was && was !== t.status &&
+          (was === "pending" || was === "running") &&
+          t.status !== "pending" && t.status !== "running") {
+        setMsg("");
+        maybeNotify(t);   // 任务落入终态 → 弹桌面通知
+      }
+    }
+    loadTasks._seen = Object.fromEntries(tasks.map(t => [t.id, t.status]));
+    renderList(tasks);
+    updateLatestResult(tasks);
+  } catch (e) { /* 静默 */ }
+  finally { _tasksBusy = false; }
+}
+
+/* ---------- 本机文件管理（仅管理员） ---------- */
+let _localExpanded = new Set();      // 已展开的文件夹（相对路径），刷新/轮询间保留
+function _localTree(files) {
+  /* 把扁平的相对路径清单组装成树：{dirs: Map<段名, 节点>, files: [行], size, count}
+     size/count 是**全部后代文件**的聚合（与文件夹行展示的体积/数量同口径） */
+  const root = {dirs: new Map(), files: [], size: 0};
+  for (const f of files) {
+    const parts = f.name.split("/");
+    let node = root;
+    for (let i = 0; i < parts.length - 1; i++) {
+      const seg = parts[i];
+      if (!node.dirs.has(seg))
+        node.dirs.set(seg, {dirs: new Map(), files: [], size: 0, count: 0});
+      node = node.dirs.get(seg);
+      node.size += f.size;
+      node.count += 1;
+    }
+    node.files.push(f);
+  }
+  return root;
+}
+function _renderLocalNode(node, prefix, depth, out) {
+  /* 文件夹在前、文件在后；嵌套行按深度缩进（inline padding-left 只覆盖左值） */
+  const dirs = [...node.dirs.entries()].sort((a, b) => a[0].localeCompare(b[0], "zh"));
+  const files = [...node.files].sort((a, b) => a.name.localeCompare(b.name, "zh"));
+  for (const [seg, child] of dirs) {
+    const path = prefix ? prefix + "/" + seg : seg;
+    const open = _localExpanded.has(path);
+    out.push(`<div class="lfile dirrow" data-ldir="${esc(path)}" style="padding-left:${6 + depth * 20}px">
+      <span class="lname" title="${esc(path)}">${open ? "📂" : "📁"} ${esc(seg)}</span>
+      <span class="lmeta">${child.count} 个文件 · ${fmtSize(child.size)} · ${open ? "收起" : "展开"}</span>
+    </div>`);
+    if (open) _renderLocalNode(child, path, depth + 1, out);
+  }
+  for (const f of files) {
+    const base = f.name.split("/").pop();
+    out.push(`<div class="lfile" style="padding-left:${6 + depth * 20}px">
+      <span class="lname" title="${esc(f.name)}">${esc(base)}</span>
+      <span class="lmeta">${fmtSize(f.size)} · 下载 ${f.count} 次</span>
+      <button class="del" data-lfile="${esc(f.name)}" title="删除文件">×</button>
+    </div>`);
+  }
+}
+async function loadLocalFiles() {
+  const card = $("localCard");
+  if (!ADMIN) { card.style.display = "none"; return; }
+  try {
+    const r = await api("/api/local/files");
+    if (!r.ok) { card.style.display = "none"; return; }
+    const d = await r.json();
+    card.style.display = "";
+    const files = d.files || [];
+    const list = $("localFiles");
+    list._files = files;             // 供文件夹点击展开时免请求重绘
+    const sig = JSON.stringify(files);
+    if (list._sig === sig) return;   // 内容没变就跳过全量重绘（否则 15s 一闪+滚动丢失）
+    list._sig = sig;
+    $("localMeta").textContent =
+      `${files.length} 个文件 · ${fmtSize((d.stats || {}).total_bytes || 0)}` +
+      ` · 上限 ${(d.stats || {}).max_gb || 0}GB / ${(d.stats || {}).ttl_days || 0}天`;
+    if (!files.length) {
+      list.innerHTML = `<div class="empty">本机暂无落盘文件<br><small style="opacity:.8">只有「本机高速」目标的转存会落在这里</small></div>`;
+      return;
+    }
+    const out = [];
+    _renderLocalNode(_localTree(files), "", 0, out);
+    list.innerHTML = out.join("");
+  } catch (e) { card.style.display = "none"; }
+}
+$("localFiles").addEventListener("click", async e => {
+  const dir = e.target.closest("[data-ldir]");
+  if (dir) {
+    // 文件夹展开/收起：纯前端重绘（数据已在 list._files），不打接口
+    const p = dir.dataset.ldir;
+    if (_localExpanded.has(p)) _localExpanded.delete(p); else _localExpanded.add(p);
+    const list = $("localFiles");
+    if (Array.isArray(list._files) && list._files.length) {
+      const out = [];
+      _renderLocalNode(_localTree(list._files), "", 0, out);
+      list.innerHTML = out.join("");
+    }
+    return;
+  }
+  const d = e.target.closest("[data-lfile]");
+  if (!d) return;
+  const ok = await showConfirm(`删除本机文件「${d.dataset.lfile}」？`, {title: "删除文件", icon: "🗑"});
+  if (!ok) return;
+  const r = await api("/api/local/files/" + encodeURIComponent(d.dataset.lfile), {method: "DELETE"});
+  if (r.ok) { showToast("已删除"); loadLocalFiles(); }
+  else showToast("删除失败");
+});
+
+/* ---------- event delegation: copy / delete ---------- */
+$("tasks").addEventListener("click", async e => {
+  const cx = e.target.closest("[data-cancel]");
+  if (cx) {
+    const row = cx.closest(".task");
+    const st = row ? row.dataset.status : "";
+    const gid = row ? row.dataset.group : "";
+    const gsz = row ? Number(row.dataset.gsize || 0) : 0;
+    // 组合转存：点一个子任务实际会取消**整组**，文案必须说清楚，别让人以为只取消一个
+    const txt = gid
+      ? `取消整个组合转存？该组 ${gsz || "多"} 个目标将全部取消，` +
+        `尚未执行的目标也不会再转存。`
+      : (st === "needs_confirm"
+          ? "确认取消这个待确认任务？超限文件将不会被转存。"
+          : "取消这个进行中的任务？");
+    const ok = await showConfirm(txt, {title: gid ? "取消整组" : "取消任务", icon: "■"});
+    if (!ok) return;
+    const params = new URLSearchParams();
+    if (!ADMIN) params.set("owner", UID);
+    const r = await api("/api/tasks/" + cx.dataset.cancel + "/cancel" +
+                        (params.toString() ? "?" + params : ""), {method: "POST"});
+    if (r.ok) {
+      let g = 0;
+      try { g = (await r.json()).cancelled_count || 0; } catch (e) {}
+      showToast(g > 1 ? `已取消整组（${g} 个目标）` : "已取消");
+      loadTasks(); return;
+    }
+    let detail = "";
+    try { detail = (await r.json()).detail || ""; } catch (e) {}
+    showToast(detail || `取消失败（${r.status}）`);
+    return;
+  }
+  const cf = e.target.closest("[data-confirm]");
+  if (cf) {
+    const params = new URLSearchParams();
+    if (!ADMIN) params.set("owner", UID);
+    const r = await api("/api/tasks/" + cf.dataset.confirm + "/confirm-continue" +
+                        (params.toString() ? "?" + params : ""), {method: "POST"});
+    if (r.ok) { showToast("已继续，将跳过超限文件转存其余"); loadTasks(); return; }
+    let detail = "";
+    try { detail = (await r.json()).detail || ""; } catch (e) {}
+    showToast(detail || `继续失败（${r.status}）`);
+    return;
+  }
+  const del = e.target.closest("[data-del]");
+  if (del) {
+    const row = del.closest(".task[data-id]");
+    const gid = row ? row.dataset.group : "";
+    const gi = gid ? (loadTasks._groups || {})[gid] : null;
+    // 组合转存删除按「一条记录」整体生效；只要组内还有子任务在跑就必须带 force，
+    // 不能只看被点的那一行（否则会撞后端的 409）。
+    const grpRunning = !!(gi && gi.kids.some(
+      k => k.status === "pending" || k.status === "running"));
+    const isRunning = grpRunning ||
+      (!!row && ["pending", "running"].includes(row.dataset.status));
+    const ok = await showConfirm(
+      gid
+        ? `删除整个组合转存记录（${(gi && gi.size) || "多"} 个目标）？` +
+          (grpRunning ? "组内仍有任务进行中，将强制删除。" : "该组全部链接都会失效。")
+        : (isRunning ? "该任务仍在进行中，确定要强制删除吗？"
+                     : "删除这条转存记录？"),
+      isRunning ? {title: "强制删除", icon: "✕"} : {title: "删除记录", icon: "✕"});
+    if (!ok) return;
+    const params = new URLSearchParams();
+    if (!ADMIN) params.set("owner", UID);
+    if (isRunning) params.set("force", "1");
+    const r = await api("/api/tasks/" + del.dataset.del +
+                        (params.toString() ? "?" + params : ""), {method: "DELETE"});
+    if (r.ok) { showToast("已删除"); loadTasks(); return; }
+    let detail = "";
+    try { detail = (await r.json()).detail || ""; } catch (e) {}
+    if (r.status === 409) showToast(detail || "任务进行中，无法删除");
+    else if (r.status === 404) showToast("记录不存在或与当前身份不匹配（管理员可删除任意记录）");
+    else showToast(detail || `删除失败（${r.status}）`);
+    return;
+  }
+});
+
+/* 复制委托挂在 document 上：任务行里的提取码/链接、以及「生成的链接」标题右侧的
+   复制按钮都才能生效（原实现只挂在 #tasks，#latestExtra/#copyLinkBtn 点了没反应）。 */
+document.addEventListener("click", e => {
+  if (e.target.closest("[data-del],[data-cancel]")) return;   // 删除/取消已由上面处理
+  const cp = e.target.closest("[data-copy]");
+  if (cp && cp.dataset.copy) copyText(cp.dataset.copy);
+  const ca = e.target.closest("[data-copyall]");
+  if (ca && ca.dataset.copyall) copyText(ca.dataset.copyall);
+});
+
+/* ---------- polling & boot ---------- */
+/* 恢复已有会话（localStorage 里的 token）。没有 token、或 token 已失效，
+   就停在**访客态**：界面照常显示，但一切交互失效，右上角可登录。 */
+async function tryRestoreSession() {
+  if (!TOKEN) { lockUI(); renderAdminBox(); renderList([]); return; }
+  const tok = TOKEN;   // 会话快照：恢复期间用户登出 → 丢弃过期响应，别把旧身份渲染出来
+  try {
+    const r = await fetch("/api/status", {headers: authHeaders()});
+    if (r.status === 401) { logout("登录已失效，请重新登录"); return; }
+    if (TOKEN !== tok) return;
+    const s = await r.json();
+    ADMIN = !!s.admin;
+    unlockUI();
+    renderAdminBox();
+    renderTargets(_lastDetected);   // 身份确定后重渲染（阿里仅管理员可选）
+    loadStatus(); loadTasks();
+  } catch (e) { /* 服务未起：保留 token，稍后轮询重试 */ }
+}
+async function boot() {
+  applyTheme(localStorage.getItem("pan_theme") === "light");
+  consumeLdFragment();    // Linux.do OAuth 回调：先落 token/身份，再走通用恢复
+  lockUI();               // 先按访客态渲染：未登录时不会闪出可交互的界面
+  renderAdminBox();
+  renderTargets(null);    // 转存到：网盘胶囊始终可见（访客态点了没反应）
+  renderList([]);         // 转存记录：访客态强制为空
+  await tryRestoreSession();
+}
+boot();
+// 访客态不轮询（省掉无谓请求）；已登录才按节奏刷新任务与就绪状态。
+// 另有 token 但启动时服务未起的情况 → 每 15 秒重试恢复会话。
+setInterval(() => { if (!document.hidden && AUTHED) loadTasks(); }, 2000);
+setInterval(() => {
+  if (document.hidden) return;
+  if (AUTHED) loadStatus();
+  else if (TOKEN) tryRestoreSession();
+}, 15000);
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+__pycache__/
+*.pyc
+.env
+data/
+*.db
+.pytest_cache/
+
+# 测试 basetemp 残留（一次 pytest 跑出来的临时库）
+.pt/
+
+# 明文凭据备忘（OpenList 面板地址 / 管理员账号）——绝不能入库
+key.txt
+*_key.txt
+
+# 调试残留（本轮排查留下的抓包/输出文件，根目录下划线开头）
+/_*.txt
+/_*.xml
+/_*.py
+/_*.js
+/_*.png
+
+# 本地验证截图（界面含个人任务信息，不入库）
+/verify_*.png
+
+# 本地备份（含凭据，绝不入库）
+backup*/
+backup*.zip
+*.zip.bak
+
+# WorkBuddy 会话记忆
+.workbuddy/

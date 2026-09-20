@@ -1,0 +1,128 @@
+services:
+  openlist:
+    image: openlistteam/openlist:latest
+    container_name: openlist
+    restart: unless-stopped
+    # 日志轮转：默认 json-file 不设上限会无限增长（OpenList 日志本来就勤）
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # 管理后台只监听本机（方案 5.3：不暴露到公网/内网）
+    ports:
+      - "127.0.0.1:5244:5244"
+    volumes:
+      - ./data/openlist:/opt/openlist/data
+      - ./data/cache:/data/cache
+      - ./data/downloads:/data/downloads
+    environment:
+      - PUID=0
+      - PGID=0
+      - UMASK=022
+      # 代理隔离：显式清空，防止任何注入的代理配置污染网盘 API 流量
+      - HTTP_PROXY=
+      - HTTPS_PROXY=
+      - http_proxy=
+      - https_proxy=
+      - NO_PROXY=*
+      - no_proxy=*
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:5244/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  pan-transfer:
+    build: ./app
+    container_name: pan-transfer
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # 只绑本机回环：对外唯一入口是 cloudflared 隧道（localhost:8100）
+    ports:
+      - "127.0.0.1:8100:8100"
+    volumes:
+      - ./data/app:/data/app
+      - ./data/cache:/data/cache
+      - ./data/downloads:/data/downloads
+      # OpenList 中转临时目录（只读）：用于计量「在途」字节（已下载未上传完）
+      - ./data/openlist/temp:/data/openlist-temp:ro
+    environment:
+      - APP_PORT=8100
+      - DB_PATH=/data/app/tasks.db
+      - CACHE_DIR=/data/cache
+      - LOCAL_DIR=/data/downloads
+      # ---- 跨平台中转保护（2026-09 大文件事故后加固）----
+      # 停滞检测：字节连续 N 分钟零增长才判卡死（替代原来的固定 10 分钟超时）
+      - RELAY_STALL_MIN=${RELAY_STALL_MIN:-15}
+      # 单个中转任务硬上限（小时），兜底防止无限期挂着
+      - RELAY_MAX_HOURS=${RELAY_MAX_HOURS:-24}
+      # 空间校验安全系数：最大单文件 × 该值 ≤ 剩余空间才放行
+      - RELAY_DISK_SAFETY=${RELAY_DISK_SAFETY:-1.2}
+      - OPENLIST_TEMP_DIR=/data/openlist-temp
+      # 启动回收：只取消「两次采样 progress 完全没变化」的僵尸复制任务。
+      # 重启时若 OpenList 仍在正常上传，一律保留（取消会把已下载的临时数据废掉）。
+      - RELAY_REAP_ON_BOOT=${RELAY_REAP_ON_BOOT:-1}
+      # 强制清理开关：置 1 时忽略「仍在推进」判断，直接取消中转目录下所有未完成任务
+      # （明知会毁掉在途上传时才用，如磁盘告急必须立刻止血）
+      - RELAY_REAP_FORCE=${RELAY_REAP_FORCE:-0}
+      # 孤儿中转任务回收的静止判据：连续两轮（各间隔 N 秒）progress 完全不动才认定僵尸
+      - RELAY_REAP_STALL_SEC=${RELAY_REAP_STALL_SEC:-45}
+      - OPENLIST_BASE=http://openlist:5244
+      - OPENLIST_TOKEN=${OPENLIST_TOKEN:-}
+      # 各平台在 OpenList 中的挂载目录（跨平台中转用，需与 OpenList 后台实际挂载一致）
+      - OPENLIST_MOUNT_BAIDU=${OPENLIST_MOUNT_BAIDU:-/baidu}
+      - OPENLIST_MOUNT_QUARK=${OPENLIST_MOUNT_QUARK:-/quark}
+      - OPENLIST_MOUNT_ALI=${OPENLIST_MOUNT_ALI:-/ali}
+      - OPENLIST_MOUNT_UC=${OPENLIST_MOUNT_UC:-/uc}
+      - OPENLIST_MOUNT_LOCAL=${OPENLIST_MOUNT_LOCAL:-/local}
+      # ---- 单文件上限（GB）：超限预检，超则暂停并让用户选择「跳过超限继续 / 取消」----
+      # 实测确认：百度单文件硬上限 8GB（约 8GB 处被服务端拒绝），夸克 20GB，阿里/UC 暂不限。
+      - OPENLIST_CAP_BAIDU_GB=${OPENLIST_CAP_BAIDU_GB:-8}
+      - OPENLIST_CAP_QUARK_GB=${OPENLIST_CAP_QUARK_GB:-20}
+      - OPENLIST_CAP_ALI_GB=${OPENLIST_CAP_ALI_GB:-0}
+      - OPENLIST_CAP_UC_GB=${OPENLIST_CAP_UC_GB:-0}
+      # 本机高速下载缓存：TTL 天数 + 容量软上限（GB）
+      - CACHE_TTL_DAYS=${CACHE_TTL_DAYS:-7}
+      - CACHE_MAX_GB=${CACHE_MAX_GB:-300}
+      # 访问口令（CF Access 未启用前的过渡防线；留空则不启用）
+      - APP_PASSWORD=${APP_PASSWORD:-}
+      # 管理员口令（解锁全部任务 + 网盘就绪状态；留空时仅本机访问可当管理员）
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      # 完成通知（可选）：Bark 推送前缀，如 https://api.day.app/<KEY>；留空则关闭
+      - BARK_URL=${BARK_URL:-}
+      # 同链接短时间去重窗口（秒），默认 600
+      - DEDUP_SECONDS=${DEDUP_SECONDS:-600}
+      # 网盘凭据（未配置时对应平台自动标记为未就绪）
+      - BAIDU_COOKIE=${BAIDU_COOKIE:-}
+      - QUARK_COOKIE=${QUARK_COOKIE:-}
+      - UC_COOKIE=${UC_COOKIE:-}
+      - ALI_REFRESH_TOKEN=${ALI_REFRESH_TOKEN:-}
+      - ALI_CLIENT_ID=${ALI_CLIENT_ID:-}
+      - ALI_CLIENT_SECRET=${ALI_CLIENT_SECRET:-}
+      # ---- Linux.do Connect（OAuth2 登录，可选；ID/SECRET 都填了才启用）----
+      - LINUXDO_CLIENT_ID=${LINUXDO_CLIENT_ID:-}
+      - LINUXDO_CLIENT_SECRET=${LINUXDO_CLIENT_SECRET:-}
+      - LINUXDO_MIN_TRUST_LEVEL=${LINUXDO_MIN_TRUST_LEVEL:-0}
+      - LINUXDO_REDIRECT_URI=${LINUXDO_REDIRECT_URI:-}
+      # 代理隔离：显式清空（阿里 token 多 IP/代理流量会触发封号，方案 5.3）
+      - HTTP_PROXY=
+      - HTTPS_PROXY=
+      - http_proxy=
+      - https_proxy=
+      - NO_PROXY=*
+      - no_proxy=*
+    healthcheck:
+      # 镜像里没有 curl/wget，用 python 自带的 urllib 打免鉴权的 /healthz
+      test: ["CMD", "python", "-c", "import sys,urllib.request as u;sys.exit(0 if u.urlopen('http://127.0.0.1:8100/healthz',timeout=3).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    depends_on:
+      openlist:
+        condition: service_started

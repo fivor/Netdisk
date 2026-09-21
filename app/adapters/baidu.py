@@ -269,6 +269,31 @@ class BaiduAdapter(Adapter):
                     raise AdapterError(
                         "文件已被百度和谐（md5 特征异常：list 可见但禁止转存），"
                         "该资源在百度盘内已失效，请更换资源源或用其他网盘的分享")
+                # 文件夹级和谐探测（2026-09-21 实锤：国画课程分享根目录只有文件夹——
+                # 文件夹无 md5 字段，上面的检查形同虚设；transfer 对文件夹做服务端
+                # 整树复制被 errno=2 拒，子目录列举同样被拒 show=「啊哦，链接出错了」，
+                # 四种参数形态全试）。仅失败路径多发至多 8 个探测请求，成功路径零开销。
+                blocked = None
+                bshow = ""
+                for f in files[:8]:
+                    if str(f.get("isdir")) != "1":
+                        continue
+                    nm = (f.get("server_filename") or "").strip()
+                    if not nm:
+                        continue
+                    rp = await c.get(
+                        f"{BASE}/share/list",
+                        params={"shareid": shareid, "uk": uk, "sekey": sekey,
+                                "dir": nm},
+                        headers=headers)
+                    pd = self._json(rp)
+                    if pd.get("errno") == 2:
+                        blocked, bshow = nm, (pd.get("show_msg") or "")
+                        break
+                if blocked is not None:
+                    raise AdapterError(
+                        f"分享内的文件夹「{blocked}」已被百度拦截（子目录列举被拒："
+                        f"{bshow or '未知'}）——判定内容被和谐，重试无意义，请更换资源源")
                 raise AdapterError(
                     "百度拒绝转存该分享的内容（百度提示：" + (show or "未知") + "）。"
                     "分享链接本身可能仍是有效的——这通常意味着文件正被百度审核或已"

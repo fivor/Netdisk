@@ -35,7 +35,7 @@ flowchart LR
 
 - 三种登录方式二选一：访问口令（普通）/ 管理员口令（派生 token）/ [Linux.do Connect](https://connect.linux.do) OAuth2（可选）
 - Linux.do 登录：一次性 state 防 CSRF、回程 token 走 URL fragment 不落日志、trust_level/active/silenced 可校验、owner 由服务端从 token 强制派生（防水平越权）、跨设备同一身份
-- 登录限速（10 次/分/IP）、常数时间 token 比较、任务按 owner 隔离、/dl 链接即凭证（任务删除即失效）
+- 登录限速（10 次/分/IP）、常数时间 token 比较、任务按 owner 隔离、/dl 链接即凭证（任务删除即失效）；登录尝试全量审计（docker logs 可查 IP/结果）；删除记录仅管理员可永久删除（普通用户仅本设备隐藏）
 - 和谐文件检测：list 可见但 md5 特征异常的文件，转存被拒时直接告知「已被百度和谐」
 
 **体验**

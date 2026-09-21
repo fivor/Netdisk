@@ -715,6 +715,14 @@ if (!UID) {
     "u-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
   localStorage.setItem("pan_uid", UID);
 }
+// 非管理员的「删除」= 仅在本设备隐藏（2026-09-21 起）：服务器记录与 /dl 下载链接
+// 都保留，永久删除只有管理员能做。隐藏列表存 localStorage 跨刷新保留，上限 500 条。
+let HIDDEN_TASKS = new Set(JSON.parse(localStorage.getItem("pan_hidden_tasks") || "[]"));
+function hideTaskLocal(ids) {
+  for (const id of ids) HIDDEN_TASKS.add(id);
+  if (HIDDEN_TASKS.size > 500) HIDDEN_TASKS = new Set([...HIDDEN_TASKS].slice(-500));
+  localStorage.setItem("pan_hidden_tasks", JSON.stringify([...HIDDEN_TASKS]));
+}
 // 管理员：口令登录换取派生 token
 let ADMIN_TOKEN = localStorage.getItem("pan_admin_token") || "";
 let ADMIN = false;
@@ -1374,7 +1382,7 @@ function buildTask(t) {
   el.innerHTML = `
     <span class="pill"><span class="dot"></span><span class="pt"></span></span>
     <span class="route">${platBadge(t.source)}<span class="arrow">→</span>${platBadge(t.target)}${ownerTag}${groupTag}</span>
-    <button class="del" data-del="${esc(t.id)}" title="删除记录">×</button>
+    <button class="del" data-del="${esc(t.id)}" title="${ADMIN ? "删除记录（服务器永久删除）" : "隐藏记录（仅本设备，服务器保留）"}">×</button>
     <span class="task-link" title="${esc(t.share_url)}">${esc(t.share_url)}</span>
     <span class="task-time"></span>
     <span class="task-body"></span>`;
@@ -1706,7 +1714,10 @@ async function loadTasks() {
     const r = await api("/api/tasks?" + qs);
     const data = await r.json();
     if (seq !== _tasksSeq || TOKEN !== tok) return;   // 过期响应/会话切换：整包丢弃
-    const tasks = data.tasks || [];
+    // 非管理员：过滤掉「本设备已隐藏」的记录——服务端记录不动，仅本界面不可见。
+    // 管理员永远看全量（隐藏列表只对普通身份生效）。
+    const tasks = ADMIN ? (data.tasks || [])
+                        : (data.tasks || []).filter(t => !HIDDEN_TASKS.has(t.id));
     loadTasks._all = tasks;
     // 首次成功加载时抓「已终态任务」快照：这些算历史，不回填到「生成的链接」区
     if (_preSettled === null) {
@@ -1881,6 +1892,23 @@ $("tasks").addEventListener("click", async e => {
   if (del) {
     const row = del.closest(".task[data-id]");
     const gid = row ? row.dataset.group : "";
+    if (!ADMIN) {
+      // 非管理员「删除」= 仅本设备隐藏：服务器记录与 /dl 下载链接保留，
+      // 永久删除（记录消失+链接失效）只有管理员能做。
+      const ok = await showConfirm(
+        "从本设备隐藏这条转存记录？服务器记录与下载链接将保留（永久删除需管理员登录）",
+        {title: "隐藏记录", icon: "🙈"});
+      if (!ok) return;
+      let ids = [del.dataset.del];
+      const grp = gid ? (loadTasks._groups || {})[gid] : null;
+      if (grp && grp.kids) ids = grp.kids.map(k => k.id);   // 组合转存整组一起隐藏
+      hideTaskLocal(ids);
+      loadTasks._all = (loadTasks._all || []).filter(t => !HIDDEN_TASKS.has(t.id));
+      renderList(loadTasks._all);
+      updateLatestResult(loadTasks._all);
+      showToast("已在本设备隐藏（服务器记录保留）");
+      return;
+    }
     const gi = gid ? (loadTasks._groups || {})[gid] : null;
     // 组合转存删除按「一条记录」整体生效；只要组内还有子任务在跑就必须带 force，
     // 不能只看被点的那一行（否则会撞后端的 409）。

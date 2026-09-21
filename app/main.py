@@ -24,6 +24,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import httpx
+import logging
 import os
 import re
 import secrets
@@ -302,6 +303,10 @@ _LOGIN_RL_WINDOW = 60.0
 _login_attempts: dict[str, tuple[float, int]] = {}
 _login_rl_lock = threading.Lock()
 
+# 登录审计：每次登录尝试（成功/失败/限速）都落一行到 stderr → docker logs 可查。
+# ⚠️ 只记 IP 与结果，绝不记口令本身。排查「谁在用有效凭证扫接口」全靠这几行。
+_auth_log = logging.getLogger("pan.auth")
+
 
 def _login_rate_ok(ip: str) -> bool:
     now = time.time()
@@ -337,18 +342,24 @@ def api_login(
     peer = request.client.host if request.client else ""
     ip = (cf_connecting_ip or x_forwarded_for or peer or "unknown").split(",")[0].strip()
     if not _login_rate_ok(ip):
+        _auth_log.warning("login ip=%s result=rate_limited", ip)
         raise HTTPException(status_code=429, detail="尝试过于频繁，请 1 分钟后再试")
     supplied = str(req.get("password") or "")
     app_pwd = settings.app_password
     admin_pwd = settings.admin_password
     if admin_pwd and supplied == admin_pwd:
+        _auth_log.warning("login ip=%s role=admin ok=1", ip)
         return {"role": "admin", "admin": True, "token": _admin_token(admin_pwd)}
     if app_pwd and supplied == app_pwd:
+        _auth_log.warning("login ip=%s role=user ok=1", ip)
         return {"role": "user", "admin": False, "token": app_pwd}
     if not app_pwd and not admin_pwd:
         if not _is_from_local(cf_connecting_ip, x_forwarded_for):
+            _auth_log.warning("login ip=%s result=denied_no_password_remote", ip)
             raise HTTPException(status_code=403, detail="口令未配置，仅限本机访问")
+        _auth_log.warning("login ip=local role=admin ok=1 mode=no_password")
         return {"role": "admin", "admin": True, "token": _admin_token("")}
+    _auth_log.warning("login ip=%s result=bad_password", ip)
     raise HTTPException(status_code=401, detail="口令错误")
 
 
@@ -829,6 +840,13 @@ def api_task_delete(task_id: str, owner: str | None = Depends(effective_owner),
     task = store.get(task_id)
     if task is None or not _can_access(task, owner, admin):
         raise HTTPException(status_code=404, detail="任务不存在")
+    if not admin:
+        # 「删除」语义（2026-09-21 起）：普通用户不再有服务端删除权限——前端把删除
+        # 按钮做成本设备隐藏（localStorage），服务器记录与 /dl 下载链接都保留；
+        # 永久删除（记录消失 + 链接失效 + CF 缓存清理）只有管理员能做。
+        # 顺序讲究：先按可见性判 404（别人的任务不暴露存在性），再判 403。
+        raise HTTPException(status_code=403,
+                            detail="普通用户仅可在本设备隐藏记录；永久删除需管理员登录")
     gid = task.get("group_id") or ""
     if gid:
         # 组合转存按「一条记录」整体删除（否则会留下残缺的兄弟任务）

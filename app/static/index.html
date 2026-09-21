@@ -1382,7 +1382,7 @@ function buildTask(t) {
   el.innerHTML = `
     <span class="pill"><span class="dot"></span><span class="pt"></span></span>
     <span class="route">${platBadge(t.source)}<span class="arrow">→</span>${platBadge(t.target)}${ownerTag}${groupTag}</span>
-    <button class="del" data-del="${esc(t.id)}" title="${ADMIN ? "删除记录（服务器永久删除）" : "隐藏记录（仅本设备，服务器保留）"}">×</button>
+    <button class="del" data-del="${esc(t.id)}" title="删除记录">×</button>
     <span class="task-link" title="${esc(t.share_url)}">${esc(t.share_url)}</span>
     <span class="task-time"></span>
     <span class="task-body"></span>`;
@@ -1893,11 +1893,14 @@ $("tasks").addEventListener("click", async e => {
     const row = del.closest(".task[data-id]");
     const gid = row ? row.dataset.group : "";
     if (!ADMIN) {
-      // 非管理员「删除」= 仅本设备隐藏：服务器记录与 /dl 下载链接保留，
-      // 永久删除（记录消失+链接失效）只有管理员能做。
+      // 非管理员「删除」（2026-09-21 定稿）：对用户呈现与原版一致的删除体验——
+      // 确认弹窗与「已删除」提示照旧；实际动作是本设备隐藏（localStorage），
+      // 服务器记录与 /dl 下载链接保留，永久删除只有管理员能做。
+      const isRunning = !!row && ["pending", "running"].includes(row.dataset.status);
       const ok = await showConfirm(
-        "从本设备隐藏这条转存记录？服务器记录与下载链接将保留（永久删除需管理员登录）",
-        {title: "隐藏记录", icon: "🙈"});
+        gid ? `删除整个组合转存记录（${(loadTasks._groups[gid] || {}).size || "多"} 个目标）？`
+            : (isRunning ? "任务仍在进行中，确定要删除吗？" : "删除这条转存记录？"),
+        {title: "删除记录", icon: "✕"});
       if (!ok) return;
       let ids = [del.dataset.del];
       const grp = gid ? (loadTasks._groups || {})[gid] : null;
@@ -1906,7 +1909,7 @@ $("tasks").addEventListener("click", async e => {
       loadTasks._all = (loadTasks._all || []).filter(t => !HIDDEN_TASKS.has(t.id));
       renderList(loadTasks._all);
       updateLatestResult(loadTasks._all);
-      showToast("已在本设备隐藏（服务器记录保留）");
+      showToast("已删除");
       return;
     }
     const gi = gid ? (loadTasks._groups || {})[gid] : null;

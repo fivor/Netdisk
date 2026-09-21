@@ -223,6 +223,20 @@ def _validate_local_mount() -> None:
 app = FastAPI(title="网盘转存站", lifespan=lifespan)
 
 
+@app.middleware("http")
+async def _security_headers(request, call_next):
+    """全局安全响应头（2026-09-21 加固）：不影响任何正常使用。
+
+    - nosniff：防浏览器把 /dl 等响应猜成别的内容类型执行；
+    - DENY 嵌框架：防点击劫持（本站无任何被嵌框场景）；
+    - no-referrer：站内跳出的外链（用户粘贴的网盘分享等）不带本站 URL 细节。"""
+    resp = await call_next(request)
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+    resp.headers.setdefault("Referrer-Policy", "no-referrer")
+    return resp
+
+
 async def require_token(
     x_auth_token: str | None = Header(default=None, alias="X-Auth-Token"),
     x_admin_token: str | None = Header(default=None, alias="X-Admin-Token"),
@@ -245,8 +259,12 @@ async def require_token(
     admin_pwd = settings.admin_password
     if not pwd and not admin_pwd:
         return
-    if pwd and secrets.compare_digest(x_auth_token or "", pwd):
-        return
+    if pwd:
+        t = x_auth_token or ""
+        # 明文口令与派生 token 都收：新登录发派生值（明文不再在请求头复用），
+        # 存量会话（token=明文口令）不断线。管理员派生 token 走下面独立分支。
+        if secrets.compare_digest(t, pwd) or secrets.compare_digest(t, _user_token(pwd)):
+            return
     if admin_pwd:
         derived = _admin_token(admin_pwd)
         if secrets.compare_digest(x_auth_token or "", derived) or \
@@ -262,6 +280,15 @@ async def require_token(
 def _admin_token(password: str) -> str:
     """管理员 token = 口令派生值（口令更换即全体失效，无需服务端会话存储）。"""
     return hashlib.sha256(("pan-admin-v1:" + password).encode()).hexdigest()
+
+
+def _user_token(password: str) -> str:
+    """普通用户 token = 口令派生值（2026-09-21 起，与管理员 token 同思路）。
+
+    派生后明文口令只在登录那一出现一次，日常请求头里流转的都是派生值——
+    token 在途中被截获 ≠ 口令泄露（口令可能被人在别的站点复用）。
+    require_token 同时接受明文口令本身：存量会话（token=口令）平滑过渡不断线。"""
+    return hashlib.sha256(("pan-user-v1:" + password).encode()).hexdigest()
 
 
 def _is_from_local(cf_ip: str | None, forwarded: str | None) -> bool:
@@ -352,7 +379,7 @@ def api_login(
         return {"role": "admin", "admin": True, "token": _admin_token(admin_pwd)}
     if app_pwd and supplied == app_pwd:
         _auth_log.warning("login ip=%s role=user ok=1", ip)
-        return {"role": "user", "admin": False, "token": app_pwd}
+        return {"role": "user", "admin": False, "token": _user_token(app_pwd)}
     if not app_pwd and not admin_pwd:
         if not _is_from_local(cf_connecting_ip, x_forwarded_for):
             _auth_log.warning("login ip=%s result=denied_no_password_remote", ip)

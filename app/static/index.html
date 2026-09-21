@@ -1657,8 +1657,14 @@ function updateLatestResult(tasks) {
     const sig = "fail:" + terminal.id;
     if (linkBox._mode === sig) return;
     linkBox._mode = sig;
-    linkBox.value = "";
-    extra.innerHTML = `<span class="error-text">✕ ${esc(terminal.error || "转存失败")}</span>`;
+    // 转存失败 → 「生成的链接」区给出人工求助通道（2026-09-21 用户要求）：
+    // 文本框填邮件指引，右侧附一键 mailto。
+    linkBox.value = "如需要进一步帮忙，烦请把网盘链接以邮件的形式发给 fivor@qq.com。"
+      + "\n我看到后会查找失败的原因，如果能有办法解决，我会回邮件。";
+    extra.innerHTML = `<span class="error-text">✕ ${esc(terminal.error || "转存失败")}</span>`
+      + ` <a class="pwd-chip" href="mailto:fivor@qq.com?subject=${
+          encodeURIComponent("转存失败求助（请附网盘链接）")}"
+          style="text-decoration:none">📧 邮件发给 fivor@qq.com</a>`;
     return;
   }
   if (terminal) {   // 成功但无链接（如阿里降级）
